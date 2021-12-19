@@ -1,18 +1,24 @@
-import express from "express";
-import bodyParser from 'body-parser'
-import usersRout from './routes/users.js'
-
+const express = require('express')
 const app = express()
-const PORT = 5000
-// const mongoose = require('mongoose')
+const PORT = process.env.PORT || 5000
+
+//env
+const dotenv=require('dotenv')
+dotenv.config()
+
 
 //connect to mongoDB:
-const  dbURI = 'mongodb+srv://margalitL:cy426316@cluster0.q4vwq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-// mongoose.connect(dbURI)
+const  dbURI = 'mongodb+srv://margalit:cy426316@teampark.lohoh.mongodb.net/TeamPark?retryWrites=true&w=majority'
+const mongoose = require ('mongoose')
+mongoose.connect(process.env.dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
+    .then((result) => {console.log('connected')})
+    .catch ((err)=>console.log(err))
 
-
+//body parser:
+const bodyParser =require('body-parser')
 app.use(bodyParser.json())
-app.use('/users', usersRout)
+
+app.use('/users', require('./routes/users'))
 
 app.get('/', (req, res) => {
     console.log('test')
