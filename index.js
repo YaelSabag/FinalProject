@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 5000
+const http = require('http')
 
 //env
 const dotenv=require('dotenv')
@@ -18,6 +19,98 @@ mongoose.connect(process.env.dbURI, {useNewUrlParser: true, useUnifiedTopology: 
 const bodyParser =require('body-parser')
 app.use(bodyParser.json())
 
+// http status codes
+const statusOK = 200;
+const statusNotFound = 404;
+
+
+// using an array to simulate a database for demonstration purposes
+var mockDatabase = [
+    {
+        fruit: "apple",
+        color: "red"
+    },
+    {
+        fruit: "banana",
+        color: "yellow"
+    }
+]
+
+// Handle GET (all) request
+app.get('/', function(req, res) {
+    // error checking
+    if (mockDatabase.length < 1) {
+        res.statusCode = statusNotFound;
+        res.send('Item not found');
+        return;
+    }
+    // send response
+    res.statusCode = statusOK;
+    res.send(mockDatabase);
+});
+
+// Handle GET (one) request
+app.get('/:id', function(req, res) {
+    // error checking
+    var id = req.params.id;
+    if (id < 0 || id >= mockDatabase.length) {
+        res.statusCode = statusNotFound;
+        res.send('Item not found');
+        return;
+    }
+    // send response
+    res.statusCode = statusOK;
+    res.send(mockDatabase[id]);
+});
+
+// Handle POST request
+app.post('/', function(req, res) {
+    // get data from request
+    var newObject = req.body; // TODO validate data
+    mockDatabase.push(newObject);
+    // send created item back with id included
+    var id = mockDatabase.length - 1;
+    res.statusCode = statusOK;
+    res.send(`Item added with id ${id}`);
+});
+
+// Handle PUT request
+app.put('/:id', function(req, res) {
+    // replace current object
+    var id = req.params.id;     // TODO validate id
+    var replacement = req.body; // TODO validate data
+    mockDatabase[id] = replacement;
+    // report back to the client
+    res.statusCode = statusOK;
+    res.send(`Item replaced at id ${id}`);
+});
+
+// Handle PATCH request
+app.patch('/:id', function(req, res) {
+    // update current object
+    var id = req.params.id;        // TODO validate id
+    var newColor = req.body.color; // TODO validate data
+    mockDatabase[id].color = newColor;
+    // report back to the client
+    res.statusCode = statusOK;
+    res.send(`Item updated at id ${id}`);
+});
+
+// Handle DELETE request
+app.delete('/:id', function(req, res) {
+    // delete specified item
+    var id = req.params.id;  // TODO validate id
+    mockDatabase.splice(id, 1);
+    // send response back
+    res.statusCode = statusOK;
+    res.send(`Item deleted at id ${id}`);
+});
+
+
+
+
+
+//routes
 app.use('/users', require('./routes/users'))
 
 app.get('/', (req, res) => {
