@@ -1,18 +1,15 @@
 const User=require('../models/users')
-
+const mongoose = require ('mongoose')
 
 //show the list of Users
-const getUsers= (req,res,next)=> {
+const getUsers= (req,res)=> {
     User.find()
         .then(response => {
-            res.json({
-                response
-            })
+            res.send(response)
+            console.log('getUsers')
         })
         .catch(error => {
-            res.json({
-                message: 'An error Occured!'
-            })
+            res.send("nnnn")
 
         })
 }
