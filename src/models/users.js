@@ -2,16 +2,16 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
-    ID:{
+    userID:{
         type: Number,
         unique: true,
         required: true
     },
-    FirstName:{
+    firstName:{
         type:String,
         maxLength:15
     },
-    LastName:{
+    lastName:{
         type:String,
         maxLength:15
     },
