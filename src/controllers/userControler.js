@@ -32,12 +32,15 @@ const getUserByID= (req,res,next)=>{
 
 const addUser= (req,res,next)=>{
     const user=new User({
-        userID:req.body.userID,
-        firstName:req.body.firstName,
-        lastName:req.body.lastName,
-        telephone:req.body.telephone,
-        age:req.body.age,
-        height:req.body.height
+        userID:123456,
+        firstName:"yael",
+        lastName:"Sabag"
+        // userID:req.body.userID,
+        // firstName:req.body.firstName,
+        // lastName:req.body.lastName,
+        // telephone:req.body.telephone,
+        // age:req.body.age,
+        // height:req.body.height
     })
     user.save()
         .then(response=>{
@@ -56,12 +59,15 @@ const addUser= (req,res,next)=>{
 const updateUser= (req,res,next)=>{
     const userID=req.body.userID
         const updateData= {
-            userID: req.body.userID,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            telephone: req.body.telephone,
-            age: req.body.age,
-            height: req.body.height
+            // userID:123456,
+            // firstName:"yael",
+            // lastName:"Sabag"
+            userID:req.body.userID,
+            firstName:req.body.firstName,
+            lastName:req.body.lastName,
+            // telephone:req.body.telephone,
+            // age:req.body.age,
+            // height:req.body.height
         }
     user.findByIdAndUpdate(userID,{$set:updateData})
         .then(response=>{
