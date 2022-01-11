@@ -118,6 +118,7 @@ app.delete('/:id', function(req, res) {
 
 //routes
 app.use('/users', require('./routes/usersAPI'))
+app.use('/attraction', require('./routes/attractionAPI'))
 
 app.get('/', (req, res) => {
     console.log('test')
