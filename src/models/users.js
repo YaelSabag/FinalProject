@@ -24,7 +24,11 @@ const userSchema = new Schema({
     height:{
         type: Number
     },
-
+    selected_attractions: {
+        type: Array,
+        default: [],
+        maxLength: 20
+    }
 })
 
 module.exports = mongoose.model('users', userSchema)

@@ -24,12 +24,6 @@ const attractionSchema = new Schema({
     },
     capacity:{
         type: Number
-    },
-    selected_attractions:{
-        type:Array,
-        default:[],
-        maxLength:20
-
     }
 })
 
