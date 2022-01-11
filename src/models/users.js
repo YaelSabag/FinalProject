@@ -23,7 +23,8 @@ const userSchema = new Schema({
     },
     height:{
         type: Number
-    }
+    },
+
 })
 
 module.exports = mongoose.model('users', userSchema)
