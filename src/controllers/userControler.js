@@ -34,8 +34,9 @@ const addUser= (req,res,next)=>{
     console.log(req.body)
     const user=new User({
         userID:req.body.userID,
-        firstName:req.body.firstName,
-        lastName:req.body.lastName,
+        //firstName:req.body.firstName,
+        //lastName:req.body.lastName,
+        selected_attractions:req.body.selected_attractions
         //telephone:req.body.telephone,
         //age:req.body.age,
         //height:req.body.height

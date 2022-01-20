@@ -1,11 +1,13 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+
 const attractionSchema = new Schema({
     attractionID:{
         type: Number,
         unique: true,
         required: true
+        //type:mongoose.Types.ObjectId
     },
     name:{
         type:String,
@@ -23,7 +25,7 @@ const attractionSchema = new Schema({
         // default: new Date().toTimeString()
     },
     capacity:{
-        type: Number
+        type: Number,
     }
 })
 

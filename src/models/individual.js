@@ -6,13 +6,14 @@ var User = mongoose.model('users');
 
 const individualSchema = new Schema({
     popID:{
-        type: mongoose.Types.ObjectId
+        type:Number,
+        unique: true
     },
-    array:{
-        type: Array,
-        default: []
-    }
+    array: [{
+        type: Number
+    }]
     //array: User.age
+    //matrix:User.selected_attractions
 })
 
 module.exports = mongoose.model('individual', individualSchema)
