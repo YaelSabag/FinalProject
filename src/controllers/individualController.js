@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 
 userSchema = require('../models/users');
 var User = mongoose.model('users');
+
 const mainArray=[] //Initial array
 
 const getIndividual= (req,res)=> {
