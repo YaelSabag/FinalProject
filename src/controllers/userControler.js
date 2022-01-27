@@ -15,7 +15,7 @@ const getUsers= (req,res)=> {
 }
 
 const getUserByID= (req,res,next)=>{
-    let userID=req.body.userID
+    let userID=req.query.userID
     User.findById(userID)
         .then(response=>{
             res.json({
@@ -31,15 +31,16 @@ const getUserByID= (req,res,next)=>{
 }
 
 const addUser= (req,res,next)=>{
-    console.log(req.body)
+    console.log("body", req.body)
+    console.log("params", req.params)
+    console.log("query", req.query)
     const user=new User({
-        userID:req.body.userID,
-        //firstName:req.body.firstName,
-        //lastName:req.body.lastName,
-        selected_attractions:req.body.selected_attractions
-        //telephone:req.body.telephone,
-        //age:req.body.age,
-        //height:req.body.height
+        userID:req.query.userID,
+        fullName:req.query.fullName,
+        email:req.query.email,
+        password:req.query.password,
+        age:req.query.age,
+        height:req.query.height
     })
     user.save()
         .then(response=>{
@@ -49,7 +50,7 @@ const addUser= (req,res,next)=>{
         })
         .catch(error => {
             res.json({
-                message: 'An error Occured!'
+                message: 'An error POST Occurred!'
             })
         })
 }
@@ -58,12 +59,12 @@ const addUser= (req,res,next)=>{
 const updateUser= (req,res,next)=>{
     const userID=req.body.userID
         const updateData= {
-            userID: req.body.userID,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            telephone: req.body.telephone,
-            age: req.body.age,
-            height: req.body.height
+            userID:req.query.userID,
+            fullName:req.query.fullName,
+            email:req.query.email,
+            password:req.query.password,
+            age:req.query.age,
+            height:req.query.height
         }
     user.findByIdAndUpdate(userID,{$set:updateData})
         .then(response=>{

@@ -47,12 +47,19 @@ const creatIndividual= (req,res)=> {
                 mainArray.push(u)
             });
             res.send(response)
-            console.log('main array',mainArray)
+            console.log('main array', mainArray)
         })
         .catch(error => {
             res.send("erroe in Individual Controller")
 
         })
+    // var dbo = db.db("mydb");
+    // var myobj = { array_main: mainArray };
+    // dbo.collection("mainArray").insertOne(myobj, function(err, res) {
+    //     if (err) throw err;
+    //     console.log("1 document inserted");
+    //     db.close();
+    // });
     //console.log('main array',mainArray)
 
 }

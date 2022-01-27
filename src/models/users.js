@@ -7,17 +7,20 @@ const userSchema = new Schema({
         unique: true,
         required: true
     },
-    firstName:{
+    fullName:{
         type:String,
         maxLength:15
     },
-    lastName:{
-        type:String,
-        maxLength:15
+    email:{
+       type: String
     },
-    telephone:{
-        type: Number
+    password:{
+        type: String,
+        minLength: 6
     },
+    // telephone:{
+    //     type: Number
+    // },
     age:{
         type: Number
     },
@@ -26,7 +29,6 @@ const userSchema = new Schema({
     },
     selected_attractions: {
         type: Array,
-        default: [],
         maxLength: 20
     }
 })
