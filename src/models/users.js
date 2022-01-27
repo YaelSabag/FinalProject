@@ -12,11 +12,14 @@ const userSchema = new Schema({
         maxLength:15
     },
     email:{
-       type: String
+       type: String,
+        unique: true,
+        required: true
     },
     password:{
         type: String,
-        minLength: 6
+        minLength: 6,
+        required: true
     },
     // telephone:{
     //     type: Number

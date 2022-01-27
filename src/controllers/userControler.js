@@ -3,6 +3,7 @@ const mongoose = require ('mongoose')
 
 //show the list of Users
 const getUsers= (req,res)=> {
+    console.log('getUsers')
     User.find()
         .then(response => {
             res.send(response)
@@ -14,9 +15,30 @@ const getUsers= (req,res)=> {
         })
 }
 
+const login= (req, res) => {
+    console.log('login func')
+    const { email, password } = req.query
+    console.log(req.query)
+    const user = User.findOne({ email }).lean()
+
+    if (!user) {
+        return res.send({ status: 'error', error: 'Invalid username/password' })
+    }
+
+    if (bcrypt.compare(password, user.password)) {
+        // the username, password combination is successful
+
+        return res.send({ status: 'ok', data: req.body })
+    }
+
+    res.send({ status: 'error', error: 'Invalid username/password' })
+}
+
+
+
 const getUserByID= (req,res,next)=>{
     let userID=req.query.userID
-    User.findById(userID)
+    User.find(userID)
         .then(response=>{
             res.json({
                 response
@@ -100,5 +122,6 @@ module.exports={
     getUserByID,
     addUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    login
 }

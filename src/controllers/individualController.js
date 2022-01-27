@@ -1,9 +1,9 @@
 const Individual= require('../models/individual')
+const generalVariabl =require('../models/generalVariables');
 const mongoose = require('mongoose')
-
 userSchema = require('../models/users');
-var User = mongoose.model('users');
 
+var User = mongoose.model('users');
 const mainArray=[] //Initial array
 
 const getIndividual= (req,res)=> {
@@ -38,29 +38,23 @@ const addIndividual= (req,res,next)=>{
 }
 
 
-
+//creat the initial array
 const creatIndividual= (req,res)=> {
-
+    const mainArrayGV =new generalVariabl()
     userSchema.find().select('selected_attractions')
         .then(response => {
             response.forEach(function(u) {
-                mainArray.push(u)
+                mainArrayGV.MainArray.push(u.selected_attractions)
             });
             res.send(response)
-            console.log('main array', mainArray)
+             console.log('main array', mainArray)
         })
+
         .catch(error => {
             res.send("erroe in Individual Controller")
 
         })
-    // var dbo = db.db("mydb");
-    // var myobj = { array_main: mainArray };
-    // dbo.collection("mainArray").insertOne(myobj, function(err, res) {
-    //     if (err) throw err;
-    //     console.log("1 document inserted");
-    //     db.close();
-    // });
-    //console.log('main array',mainArray)
+
 
 }
 
