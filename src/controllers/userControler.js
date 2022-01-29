@@ -1,5 +1,6 @@
 const User=require('../models/users')
 const mongoose = require ('mongoose')
+const {bcrypt} = require("buffer");
 
 //show the list of Users
 const getUsers= (req,res)=> {
@@ -17,21 +18,21 @@ const getUsers= (req,res)=> {
 
 const login= (req, res) => {
     console.log('login func')
-    const { email, password } = req.query
+    let email=req.query.email
+    let password=req.query.password
     console.log(req.query)
-    const user = User.findOne({ email }).lean()
+    User.findOne({ email }).then(response => {
+        if (password == response.password) {
+            res.send('ok')
+        }
+        else {
+            res.send('Invalid password')
+        }
+    })
+    .catch(error => {
+        res.send('Invalid username')
 
-    if (!user) {
-        return res.send({ status: 'error', error: 'Invalid username/password' })
-    }
-
-    if (bcrypt.compare(password, user.password)) {
-        // the username, password combination is successful
-
-        return res.send({ status: 'ok', data: req.body })
-    }
-
-    res.send({ status: 'error', error: 'Invalid username/password' })
+    })
 }
 
 
@@ -66,14 +67,10 @@ const addUser= (req,res,next)=>{
     })
     user.save()
         .then(response=>{
-            res.json({
-                message:'User Added successfully'
-            })
+            res.send('User Updated successfully')
         })
         .catch(error => {
-            res.json({
-                message: 'An error POST Occurred!'
-            })
+                res.send( 'An error POST Occured!')
         })
 }
 
@@ -90,14 +87,10 @@ const updateUser= (req,res,next)=>{
         }
     user.findByIdAndUpdate(userID,{$set:updateData})
         .then(response=>{
-            res.json({
-                message:'User Updated successfully'
-            })
+            res.send('User Updated successfully')
         })
         .catch(error => {
-            res.json({
-                message: 'An error Occured!'
-            })
+            res.send( 'An error Occured!')
         })
 }
 
