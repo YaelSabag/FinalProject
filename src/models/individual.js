@@ -9,9 +9,7 @@ const individualSchema = new Schema({
         type:Number,
         unique: true
     },
-    array: [{
-        type: Number
-    }]
+    array:[]
     //array: User.age
     //matrix:User.selected_attractions
 })

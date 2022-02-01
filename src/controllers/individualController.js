@@ -40,33 +40,38 @@ const addIndividual= (req,res,next)=>{
 
 
 //creat the initial array
-const creatIndividual= (req,res)=> {
+const creatInitialIndividual= (req,res)=> {
     const mainArrayGV =new generalVariabl()
     userSchema.find().select('selected_attractions')
         .then(response => {
             response.forEach(function(u) {
                 mainArrayGV.MainArray.push(u.selected_attractions)
             });
-            res.send(response)
-                .then(
-                    mainArrayGV.save()
-                )
-
+            mainArrayGV.save().then(response=>{
+                res.send(response)
+            })
             console.log('main array', mainArray)
         })
-
         .catch(error => {
-            res.send("erroe in Individual Controller")
+            res.send("error in Individual Controller")
 
         })
 
 
 }
-
-
+//
+// const t = new Date();
+// const date = ('0' + t.getDate()).slice(-2);
+// const month = ('0' + (t.getMonth() + 1)).slice(-2);
+// const year = t.getFullYear();
+// // return `${date}/${month}/${year}`;
+// console.log(`${date}/${month}/${year}`)
 
 
 const Randomization= ()=> {
+    //let mainArray = generalVariabl.find().then()
+
+
     for (let i=0; i<mainArray.length; ++i){
         mainArray[i]=shuffle(mainArray[i]);
     }
@@ -97,7 +102,7 @@ function shuffle(array) {
 module.exports = {
     getIndividual,
     addIndividual,
-    creatIndividual,
+    creatInitialIndividual,
     Randomization,
     shuffle
 }
