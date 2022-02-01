@@ -6,6 +6,7 @@ userSchema = require('../models/users');
 var User = mongoose.model('users');
 const mainArray=[] //Initial array
 
+
 const getIndividual= (req,res)=> {
     Individual.find()
         .then(response => {
@@ -47,7 +48,11 @@ const creatIndividual= (req,res)=> {
                 mainArrayGV.MainArray.push(u.selected_attractions)
             });
             res.send(response)
-             console.log('main array', mainArray)
+                .then(
+                    mainArrayGV.save()
+                )
+
+            console.log('main array', mainArray)
         })
 
         .catch(error => {
@@ -57,6 +62,7 @@ const creatIndividual= (req,res)=> {
 
 
 }
+
 
 
 
