@@ -85,14 +85,30 @@ const updateUser= (req,res,next)=>{
             age:req.query.age,
             height:req.query.height
         }
-    user.findByIdAndUpdate(userID,{$set:updateData})
+    User.findByIdAndUpdate(userID,{$set:updateData})
         .then(response=>{
             res.send('User Updated successfully')
         })
         .catch(error => {
-            res.send( 'An error Occured!')
+            res.send( 'An error Occurred!')
         })
 }
+
+
+const selected_attraction_update = (req,res,next)=>{
+    console.log("selected_attraction_update")
+    const userID=req.query.userID
+    const selected_attractions_update = req.query.selected_attractions
+    console.log(req.query)
+    User.findOneAndUpdate({userID},{$set:{selected_attractions:selected_attractions_update}})
+        .then(response=>{
+            res.send('User Updated successfully')
+        })
+        .catch(error => {
+            res.send( 'An error Occurred!')
+        })
+}
+
 
 const deleteUser= (req,res,next)=>{
     const userID=req.body.userID
@@ -116,5 +132,6 @@ module.exports={
     addUser,
     updateUser,
     deleteUser,
-    login
+    login,
+    selected_attraction_update
 }
