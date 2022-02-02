@@ -119,8 +119,7 @@ const selected_attraction_update = (req,res,next)=>{
 
 const deleteUser= (req,res,next)=>{
     const userID=req.body.userID
-
-    user.findByIdAndRemove(userID)
+    User.findByIdAndRemove(userID)
         .then(response=>{
             res.json({
                 message:'User Deleted successfully'

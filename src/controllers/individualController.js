@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 userSchema = require('../models/users');
 
 
-
 var User = mongoose.model('users');
 const mainArray=[] //Initial array
 
@@ -22,7 +21,9 @@ const getIndividual= (req,res)=> {
 }
 
 const addIndividual= (req,res,next)=>{
-    console.log(req.body)
+    console.log("addIndividual",req.body)
+    console.log("addIndividual",req.query)
+    console.log("addIndividual",req.params)
     const individual=new Individual({
         popID:req.body.popID,
         array:req.body.array
@@ -44,15 +45,17 @@ const addIndividual= (req,res,next)=>{
 //creat the initial array
 const creatInitialIndividual= (req,res)=> {
     const mainArrayGV =new generalVariabl()
-    userSchema.find().select('selected_attractions')
+    userSchema.find()
+        //.select('selected_attractions')
         .then(response => {
             response.forEach(function(u) {
-                mainArrayGV.MainArray.push(u.selected_attractions)
+                mainArrayGV.MainArray.push([u.selected_attractions,u.userID])
             });
             mainArrayGV.save().then(response=>{
                 res.send(response)
             })
             console.log('main array', mainArray)
+            console.log('mainArrayGV', mainArrayGV)
         })
         .catch(error => {
             res.send("error in Individual Controller")
@@ -63,8 +66,8 @@ const creatInitialIndividual= (req,res)=> {
 }
 
 
-
-const Randomization= (req,res)=> {
+const Randomization= (req,res,id)=> {
+    console.log("Randomization")
     today= DateToString()
     const arr =new generalVariabl()
     let i;
@@ -78,12 +81,19 @@ const Randomization= (req,res)=> {
            });
 
            for ( i = 0; i < arr.MainArray.length; ++i) {
-               arr.MainArray[i] = shuffle(arr.MainArray[i]);
+               arr.MainArray[i][0] = shuffle(arr.MainArray[i][0]);
            }
-           res.send(arr)
-
+           const individual=new Individual({
+               popID:id,
+               array:arr.MainArray
+           })
+           individual.save().then(response=>{
+               console.log(response)
+               //res.send("Randomization succeed")
+           })
        })
         .catch(error => {
+            console.log("error end")
             res.send("error in Random")
 
         })
@@ -108,6 +118,24 @@ function shuffle(array) {
     return array;
 }
 
+const deleteIndividual= (req,res,next)=>{
+    //const userID=req.body.userID
+    Individual.deleteMany()
+        .then(response=>{
+                res.send('Individuals Deleted successfully')
+        })
+        .catch(error => {
+            res.send('error Individuals Delete')
+        })
+}
+
+const makePopulation = (req,res)=>
+{
+    for(let i =0; i<10;++i)
+    {
+        Randomization(req,res,i)
+    }
+}
 
 const DateToString= ()=> {
     const t = new Date();
@@ -124,5 +152,7 @@ module.exports = {
     creatInitialIndividual,
     Randomization,
     shuffle,
-    DateToString
+    DateToString,
+    makePopulation,
+    deleteIndividual
 }
