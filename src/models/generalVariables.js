@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 var d = new Date()
-const setDate = function (d) {
+const DateToString = function (d) {
     //const t = new Date();
     const date = ('0' + d.getDate()).slice(-2);
     const month = ('0' + (d.getMonth() + 1)).slice(-2);
@@ -14,7 +14,8 @@ const generalVariablesSchema = new Schema({
     MainArray:[],
     date:{
         type: String,
-        default: setDate(d)
+        default: DateToString(d),
+        //unique: true
     }
 
 

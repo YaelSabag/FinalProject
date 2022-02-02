@@ -3,6 +3,8 @@ const generalVariabl =require('../models/generalVariables');
 const mongoose = require('mongoose')
 userSchema = require('../models/users');
 
+
+
 var User = mongoose.model('users');
 const mainArray=[] //Initial array
 
@@ -59,23 +61,32 @@ const creatInitialIndividual= (req,res)=> {
 
 
 }
-//
-// const t = new Date();
-// const date = ('0' + t.getDate()).slice(-2);
-// const month = ('0' + (t.getMonth() + 1)).slice(-2);
-// const year = t.getFullYear();
-// // return `${date}/${month}/${year}`;
-// console.log(`${date}/${month}/${year}`)
 
 
-const Randomization= ()=> {
-    //let mainArray = generalVariabl.find().then()
 
+const Randomization= (req,res)=> {
+    today= DateToString()
+    const arr =new generalVariabl()
+    let i;
 
-    for (let i=0; i<mainArray.length; ++i){
-        mainArray[i]=shuffle(mainArray[i]);
-    }
-    console.log('random',mainArray)
+    generalVariabl.find()
+       .then(response => {
+           response.forEach(function(u) {
+               if(u.date==today) {
+                   arr.MainArray=(u.MainArray)
+                }
+           });
+
+           for ( i = 0; i < arr.MainArray.length; ++i) {
+               arr.MainArray[i] = shuffle(arr.MainArray[i]);
+           }
+           res.send(arr)
+
+       })
+        .catch(error => {
+            res.send("error in Random")
+
+        })
 }
 
 
@@ -96,7 +107,15 @@ function shuffle(array) {
 
     return array;
 }
-// console.log(Randomization())
+
+
+const DateToString= ()=> {
+    const t = new Date();
+    const date = ('0' + t.getDate()).slice(-2);
+    const month = ('0' + (t.getMonth() + 1)).slice(-2);
+    const year = t.getFullYear();
+    return `${date}/${month}/${year}`;
+}
 
 
 module.exports = {
@@ -104,5 +123,6 @@ module.exports = {
     addIndividual,
     creatInitialIndividual,
     Randomization,
-    shuffle
+    shuffle,
+    DateToString
 }
