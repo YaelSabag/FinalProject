@@ -24,12 +24,11 @@ const addAttraction= (req,res,next)=>{
         // countNow: req.body.countNow,
         // capacity: req.body.capacity
         //time:d
-        attractionID:22,
-        name: 'anaconda',
-        Round: 2,
+        attractionID:55,
+        name: '55',
+        Round: 3,
         countNow: 0,
-        capacity:10,
-        time:d
+        capacity:3
     })
     attraction.save()
         .then(response=>{

@@ -64,9 +64,9 @@ const addUser= (req,res,next)=>{
         // password:req.query.password,
         // age:req.query.age,
         // height:req.query.height
-        userID:1111,
-        fullName:"Avia",
-        email:"av@gmail.com",
+        userID:9090,
+        fullName:"yael",
+        email:"yyyy@gmail.com",
         password:"123456",
         age:22,
         height:1.78,
