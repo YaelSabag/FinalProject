@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3000
 const http = require('http')
+const Attraction =require('./src/models/attraction');
 
 //env
 const dotenv=require('dotenv')
@@ -126,7 +127,14 @@ app.get('/', (req, res) => {
     res.send('hello world')
 })
 
+
 app.listen(PORT, hostname, ()=> console.log(`server running at: http://${hostname}:${PORT}`))
+
+
+
+
+
+
 
 
 

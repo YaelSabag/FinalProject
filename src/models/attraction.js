@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 
+d=new Date()
+var add_hours =  function (dt, hours) {
+    return new Date(dt.getTime() + hours*3600000);
+}
+
 const attractionSchema = new Schema({
     attractionID:{
         type: Number,
@@ -13,16 +18,16 @@ const attractionSchema = new Schema({
         type:String,
         maxLength:15
     },
-    round:{
+    Round:{
         type: Number
     },
-    count:{
+    countNow:{
         type: Number
     },
     time:{
-        type: Number
-        // type: new Date().toTimeString(),
-        // default: new Date().toTimeString()
+        type: Date,
+        default:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8)
+
     },
     capacity:{
         type: Number,

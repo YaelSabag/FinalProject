@@ -1,6 +1,15 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+
+d=new Date()
+var add_hours =  function (dt, hours) {
+    return new Date(dt.getTime() + hours*3600000);
+}
+
+var t= add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8).getTime()
+
+
 const userSchema = new Schema({
     userID:{
         type: Number,
@@ -29,6 +38,10 @@ const userSchema = new Schema({
     },
     height:{
         type: Number
+    },
+    time:{
+        type:Date,
+        default:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8)
     },
     selected_attractions: {
         type: Array,

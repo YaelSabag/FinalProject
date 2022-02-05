@@ -16,12 +16,20 @@ const getAttraction= (req,res)=> {
 
 const addAttraction= (req,res,next)=>{
     console.log(req.body)
+    d=new Date()
     const attraction=new Attraction({
-        attractionID:req.body.attractionID,
-        name: req.body.name,
-        round: req.body.round,
-        count: req.body.count,
-        capacity: req.body.capacity
+        // attractionID:req.body.attractionID,
+        // name: req.body.name,
+        // Round: req.body.Round,
+        // countNow: req.body.countNow,
+        // capacity: req.body.capacity
+        //time:d
+        attractionID:22,
+        name: 'anaconda',
+        Round: 2,
+        countNow: 0,
+        capacity:10,
+        time:d
     })
     attraction.save()
         .then(response=>{
@@ -36,7 +44,24 @@ const addAttraction= (req,res,next)=>{
         })
 }
 
+
+function getAttractionByID(id){
+    var myquery = {attractionID:id }
+    // let attractionID=req.query
+    Attraction.find(myquery)
+        .then(response=>{
+            res.send(response)
+        })
+        .catch(error => {
+            res.json({
+                message: 'attraction!'
+            })
+        })
+
+}
+
 module.exports={
     getAttraction,
-    addAttraction
+    addAttraction,
+    getAttractionByID
 }

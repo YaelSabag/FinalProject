@@ -132,6 +132,8 @@ const deleteUser= (req,res,next)=>{
         })
 }
 
+
+
 module.exports={
     getUsers,
     getUserByID,
