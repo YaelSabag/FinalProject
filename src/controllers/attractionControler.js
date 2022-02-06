@@ -59,6 +59,17 @@ function getAttractionByID(id){
 
 }
 
+const getAttractionByID= (id)=>{
+    let attractionID = id
+    Attraction.findOne({attractionID})
+        .then(response=>{
+            return response
+        })
+        .catch(error => {
+            return "an error occurred"
+        })
+}
+
 module.exports={
     getAttraction,
     addAttraction,

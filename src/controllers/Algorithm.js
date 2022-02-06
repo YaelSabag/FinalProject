@@ -72,30 +72,34 @@ pop_exmp6=[[2,1,3,4,5],[1,4,3,2,5],[1,5,4,3,2],[5,3,1,2]]
 // כאן מסתיימת לולאת for {
 
 //
-
+var x = 0;
 async function fitness(popID){
 //population is matrix of selected attractions arrays
 
 
-            // חיפשנו את המערך הכי ארוך ועד אליו רצנו בריצה על המטריצה
-            let individualDoc= await Individual.findOne({popID: popID})
-            max=0
-            for (let i=0;i<individualDoc.array.length;i++){
-                if( individualDoc.array[i][0].length > max)
-                    max=individualDoc.array[i][0].length
-            }
-            console.log(max)
+    // חיפשנו את המערך הכי ארוך ועד אליו רצנו בריצה על המטריצה
+    // db.collection('individuals').findOne({popID: popID}).then(res=>{ console.log('res',res)})
+    //     .catch(error=>{console.log('error')})
+    let individualDoc = await Individual.findOne({popID: popID})
+    max=0
+    for (let i=0;i<individualDoc.array.length;i++){
+        if( individualDoc.array[i][0].length > max)
+            max=individualDoc.array[i][0].length
+    }
+    console.log(max)
 
     for (var j=0; j< max ; j++)//עמודה
     {
         for (var i = 0; i < individualDoc.array.length; i++) //שורה
-
         {
+            // let r = await Promise.resolve(i);
+            // console.log('After await. Value is ', r);
+
             // let array1 = individualDoc.array[i][0][j]
             switch (individualDoc.array[i][0][j]) { // המתקן שהבנאדם בחר
                 case 1:
                     Enter_To_Attraction1(individualDoc.array[i][1], 11)// id person, אובייקט של האטרקציה,
-                    break;
+                break;
                 case 2:
                     Enter_To_Attraction1(individualDoc.array[i][1], 22)
                     break;
@@ -109,14 +113,19 @@ async function fitness(popID){
                     Enter_To_Attraction1(individualDoc.array[i][1], 55)
                     break;
                 default :
-                        console.log('end of vector '+i)
+                    console.log('end of vector '+i)
                     break;
 
             }
+            let promise = new Promise((resolve, reject) => {
+                setTimeout(() => resolve("done!"), 1800)
+            });
 
+            let result = await promise;
+            console.log(result);
         }
     }
-
+    return console.log('end fit')
 }
 
 
@@ -143,67 +152,70 @@ function avg(){
 
 
 
-    //attractions  -   [0]-count , [1]-time
-    // function  Enter_To_Attraction( id ,attraction, round,top) {
-    //
-    //     if (attraction[0] == 0) {   // count==0     //של המתקן שווה ל0 זא שהסיבוב  ריק count
-    //         attraction[0]++ // מכניסים בנאדם ומקדמים את הקוואנט
-    //         persons_arr[id] += round //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
-    //         attraction[1] += round // מוסיפים את הזמן של הראונד לטיים של המתקן
-    //     }
-    //
-    //     else { // יש אנשים כבר בתור ואנחנו רוצים להסויף מישהו
-    //         //persons_arr[id]  הזמן של היוזר בכל רגע
-    //
-    //
-    //         // אם הזמן של היוזר קטן מהזמן הנוכחי של המתקן כלומר שאפשר להכניס אותו לסיבוב הקרוב && שיש מקום בסיבוב
-    //         if (persons_arr[id] < attraction[1] && attraction[0] < top) {
-    //             attraction[0]++ // מקדמת את הקוואנט של התור -הסיבוב הנוכחי
-    //             persons_arr[id] += round // מעדכנת את השעה של היוזר
-    //             if (attraction[0] == top) { // אם אחרי ההסופה נגמר המקום בתור
-    //                 attraction[1] += round //  מעדכנים את השעה של המתקן לסיבוב הבא
-    //                 attraction[0] = 0 // מאפסים את הקוואנט של הסיבוב החדש
-    //             }
-    //
-    //
-    //
-    //             // היוזר הגיע בזמן אבל איו מקום בסיבוב הנוכחי
-    //         } else if (persons_arr[id] < attraction[1] && attraction[0] >= top) {
-    //             attraction[1] += round // מעדכנים את הטיים של המתקן לסיבוב הבא
-    //             attraction[0] = 1 // מוסיפים את הבנאדם לסיבוב החדש
-    //             persons_arr[id] += attraction[1] //מעדכנים הטיים של היוזר
-    //             //   persons_arr[id] = attraction[1]  עושים השמה של הזמן הסופי של המתקן לתוך הטיים של היוזר
-    //
-    //
-    //
-    //
-    //         } else { // (persons_arr[id] > Time_A)
-    //             while (persons_arr[id] > attraction[1])
-    //                 attraction[1]+=round // מוסיפים את החור שנוצר לזמן של המתקן
-    //
-    //             //attraction[0]=0 מה שהיה לפני
-    //             attraction[0]=1 // מוסיפים את הבנאדם לסיבוב החדש
-    //             persons_arr[id] += round //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
-    //             attraction[1] += round // אמור לסיים את הסיבוב בשעה הזאת
-    //         }
-    //
-    //
-    //     }
-    // }
+//attractions  -   [0]-count , [1]-time
+// function  Enter_To_Attraction( id ,attraction, round,top) {
+//
+//     if (attraction[0] == 0) {   // count==0     //של המתקן שווה ל0 זא שהסיבוב  ריק count
+//         attraction[0]++ // מכניסים בנאדם ומקדמים את הקוואנט
+//         persons_arr[id] += round //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
+//         attraction[1] += round // מוסיפים את הזמן של הראונד לטיים של המתקן
+//     }
+//
+//     else { // יש אנשים כבר בתור ואנחנו רוצים להסויף מישהו
+//         //persons_arr[id]  הזמן של היוזר בכל רגע
+//
+//
+//         // אם הזמן של היוזר קטן מהזמן הנוכחי של המתקן כלומר שאפשר להכניס אותו לסיבוב הקרוב && שיש מקום בסיבוב
+//         if (persons_arr[id] < attraction[1] && attraction[0] < top) {
+//             attraction[0]++ // מקדמת את הקוואנט של התור -הסיבוב הנוכחי
+//             persons_arr[id] += round // מעדכנת את השעה של היוזר
+//             if (attraction[0] == top) { // אם אחרי ההסופה נגמר המקום בתור
+//                 attraction[1] += round //  מעדכנים את השעה של המתקן לסיבוב הבא
+//                 attraction[0] = 0 // מאפסים את הקוואנט של הסיבוב החדש
+//             }
+//
+//
+//
+//             // היוזר הגיע בזמן אבל איו מקום בסיבוב הנוכחי
+//         } else if (persons_arr[id] < attraction[1] && attraction[0] >= top) {
+//             attraction[1] += round // מעדכנים את הטיים של המתקן לסיבוב הבא
+//             attraction[0] = 1 // מוסיפים את הבנאדם לסיבוב החדש
+//             persons_arr[id] += attraction[1] //מעדכנים הטיים של היוזר
+//             //   persons_arr[id] = attraction[1]  עושים השמה של הזמן הסופי של המתקן לתוך הטיים של היוזר
+//
+//
+//
+//
+//         } else { // (persons_arr[id] > Time_A)
+//             while (persons_arr[id] > attraction[1])
+//                 attraction[1]+=round // מוסיפים את החור שנוצר לזמן של המתקן
+//
+//             //attraction[0]=0 מה שהיה לפני
+//             attraction[0]=1 // מוסיפים את הבנאדם לסיבוב החדש
+//             persons_arr[id] += round //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
+//             attraction[1] += round // אמור לסיים את הסיבוב בשעה הזאת
+//         }
+//
+//
+//     }
+// }
 
 // }
 
 
 async  function  Enter_To_Attraction1 (userID,attractionID) {
+    //x=0;
     console.log('send UserID: ',userID,'attID',attractionID)
+
     let attractionDoc = await Attraction.findOne({attractionID: attractionID})
     let userDoc = await User.findOne({userID: userID})
 
-    if (attractionDoc.countNow == 0) {   //של המתקן שווה ל0 זא שהסיבוב  ריק count
-        // console.log('if 1')
+    if (attractionDoc.countNow == 0 && userDoc.time <= attractionDoc.time) {   //של המתקן שווה ל0 זא שהסיבוב  ריק count
+        console.log('if 1')
         await Attraction.findOneAndUpdate({attractionID: attractionID}, {$inc: {countNow: 1}})// מכניסים בנאדם ומקדמים את הקוואנט
         await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(userDoc.time, attractionDoc.Round)}})  //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
-        await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) // מוסיפים את הזמן של הראונד לטיים של המתקן
+        //await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}).then(x=1) // מוסיפים את הזמן של הראונד לטיים של המתקן
+        //await x=1;
     }
 
 
@@ -213,9 +225,9 @@ async  function  Enter_To_Attraction1 (userID,attractionID) {
 
         // אם הזמן של היוזר קטן מהזמן הנוכחי של המתקן כלומר שאפשר להכניס אותו לסיבוב הקרוב && שיש מקום בסיבוב
         if (userDoc.time <= attractionDoc.time && attractionDoc.countNow < attractionDoc.capacity) {
-            // console.log('if 2')
+            console.log('if 2')
             await Attraction.findOneAndUpdate({attractionID: attractionID}, {$inc: {countNow: 1}}) // מקדמת את הקוואנט של התור -הסיבוב הנוכחי
-            await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}})// מעדכנת את השעה של היוזר
+            await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}).then(x=1)// מעדכנת את השעה של היוזר
 
             // if ((attractionDoc.countNow+=1)== attractionDoc.capacity) { // אם אחרי ההסופה נגמר המקום בתור
             //     console.log(attractionDoc.countNow)
@@ -225,33 +237,34 @@ async  function  Enter_To_Attraction1 (userID,attractionID) {
         }
 
         // היוזר הגיע בזמן אבל איו מקום בסיבוב הנוכחי
-            else if (userDoc.time <= attractionDoc.time && attractionDoc.countNow == attractionDoc.capacity) {
-                // console.log('else if')
-                await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) // מעדכנים את הטיים של המתקן לסיבוב הבא
-                attractionDoc.time=add_minutes(attractionDoc.time, attractionDoc.Round)
-                await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {countNow: 1}})// מוסיפים את הבנאדם לסיבוב החדש
-                await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) //מעדכנים הטיים של היוזר לטיים האחרון של המתקן
+        else if (userDoc.time <= attractionDoc.time && attractionDoc.countNow == attractionDoc.capacity) {
+            console.log('else if')
+            await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) // מעדכנים את הטיים של המתקן לסיבוב הבא
+            attractionDoc.time=add_minutes(attractionDoc.time, attractionDoc.Round)
+            await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {countNow: 1}})// מוסיפים את הבנאדם לסיבוב החדש
+            await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}).then(x=1) //מעדכנים הטיים של היוזר לטיים האחרון של המתקן
+        }
+
+        // היוזר איחר למתקן
+        else {
+            console.log('else')
+            // כאן נוצר חור אך כשנעשה פיטנס נקח את התוצאה הטובה ביותר והפרטים עם החור ירדו או שנקח את הפתרון עם החור הכי קטן
+            while (userDoc.time > attractionDoc.time){
+                await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) // מוסיפים את החור שנוצר לזמן האחרון של המתקן
+                attractionDoc.time=add_minutes(attractionDoc.time, attractionDoc.Round)// מעדכנים גם את המשתנה שיוקדם בהתאם בשביל תנאי while
+                console.log('att time inc ' ,attractionDoc.time)
             }
+            //attraction[0]=0 מה שהיה לפני
+            await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {countNow: 1}})// מוסיפים את הבנאדם לסיבוב החדש
+            await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
+            //await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}).then(x=1) // מעדכנים את הטיים של המתקן לסיבוב הבא
 
-            // היוזר איחר למתקן
-            else {
-                // console.log('else')
-                    // כאן נוצר חור אך כשנעשה פיטנס נקח את התוצאה הטובה ביותר והפרטים עם החור ירדו או שנקח את הפתרון עם החור הכי קטן
-                while (userDoc.time > attractionDoc.time){
-                    await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) // מוסיפים את החור שנוצר לזמן האחרון של המתקן
-                    attractionDoc.time=add_minutes(attractionDoc.time, attractionDoc.Round)// מעדכנים גם את המשתנה שיוקדם בהתאם בשביל תנאי while
-                    console.log('att time inc ' ,attractionDoc.time)
-                }
-                //attraction[0]=0 מה שהיה לפני
-                await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {countNow: 1}})// מוסיפים את הבנאדם לסיבוב החדש
-                await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
-                await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) // מעדכנים את הטיים של המתקן לסיבוב הבא
-            }
+        }
 
-            // חייבת להבין למה מקדמים את הראונד של המתקן כל פעם שמוסיפים בנאדם
-
+        // חייבת להבין למה מקדמים את הראונד של המתקן כל פעם שמוסיפים בנאדם
 
     }
+    //x = 1;
 }
 
 
@@ -285,3 +298,14 @@ async  function  Enter_To_Attraction1 (userID,attractionID) {
 
 
 
+// async function test() {
+//     for (let i = 0; i < 2; i++) {
+//         console.log('Before await for ', i);
+//         let result = await Promise.resolve(i);
+//         console.log('After await. Value is ', result);
+//     }
+// }
+//
+// test().then(_ => console.log('After test() resolved'));
+//
+// console.log('After calling test');
