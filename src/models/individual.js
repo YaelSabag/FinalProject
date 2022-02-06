@@ -9,7 +9,11 @@ const individualSchema = new Schema({
         type:Number,
         unique: true
     },
-    array:[]
+    array:[],
+    fitness:{
+        type: Number,
+        default: 0
+    }
     //array: User.age
     //matrix:User.selected_attractions
 })

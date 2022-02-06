@@ -45,11 +45,12 @@ const addIndividual= (req,res,next)=>{
 //creat the initial array
 const creatInitialIndividual= (req,res)=> {
     const mainArrayGV =new generalVariabl()
+    schedule = new Array()
     userSchema.find()
         //.select('selected_attractions')
         .then(response => {
             response.forEach(function(u) {
-                mainArrayGV.MainArray.push([u.selected_attractions,u.userID])
+                mainArrayGV.MainArray.push([u.selected_attractions,u.userID,schedule])
             });
             mainArrayGV.save().then(response=>{
                 res.send(response)
@@ -131,7 +132,7 @@ const deleteIndividual= (req,res,next)=>{
 
 const makePopulation = (req,res)=>
 {
-    for(let i =20; i<30;++i)
+    for(let i =0; i<3;++i)
     {
         Randomization(req,res,i)
     }

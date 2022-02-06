@@ -44,30 +44,18 @@ const addAttraction= (req,res,next)=>{
 }
 
 
-function getAttractionByID(id){
-    var myquery = {attractionID:id }
-    // let attractionID=req.query
-    Attraction.find(myquery)
+
+
+const  getAttractionByID= (req,res,next)=>{
+    let attractionID = req.query.attractionID
+    Attraction.findById(attractionID)
         .then(response=>{
             res.send(response)
         })
         .catch(error => {
-            res.json({
-                message: 'attraction!'
-            })
+            res.send("an error occurred")
         })
 
-}
-
-const getAttractionByID= (id)=>{
-    let attractionID = id
-    Attraction.findOne({attractionID})
-        .then(response=>{
-            return response
-        })
-        .catch(error => {
-            return "an error occurred"
-        })
 }
 
 module.exports={
