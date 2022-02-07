@@ -64,7 +64,7 @@ function Evolution() {
         deleteIndividual(delete_arr)
 
         // עדכון של כל הI של הפופלישיין
-
+        updatePopID(delete_arr)
     }
     //return של הפיטנס הכי קטן-הכי טוב
 }
@@ -85,6 +85,20 @@ function crossover(parents_arr,i){
 
 
 
+function updatePopID(delete_arr) {
+    let childrenID_arr = [NUM_POP + 1, NUM_POP + 2, NUM_POP + 3, NUM_POP + 4]
+    let sizeDelete = delete_arr.length
+    for (let i = 0; i < sizeDelete; ++i) {
+        Individual.findOneAndUpdate({popID: {$in: childrenID_arr}}, {popID: delete_arr[delete_arr.length - 1]})
+        .then(response => {
+            console.log("update popID successful")
+        })
+        .catch(error => {
+            console.log("error update popID")
+        })
+        delete_arr.pop()
+    }
+}
 
 
 //1
