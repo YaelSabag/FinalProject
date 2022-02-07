@@ -23,7 +23,9 @@ var add_minutes =  function (dt, minutes) {
     return new Date(dt.getTime() + minutes*60000);
 }
 
-
+var add_hours =  function (dt, hours) {
+    return new Date(dt.getTime() + hours*3600000);
+}
 
 // console.log("the fit of population: ",fit1 , fit2 , fit3 , fit4 , fit5 , fit6 )
 
@@ -127,11 +129,13 @@ async function fitness(popID){
     avg = sum/individualDoc.array.length
     console.log('avg',avg)
     await Individual.findOneAndUpdate({popID: popID},{fitness:avg})
+    reset_UserTime()
+    resetAttractions()
     console.log('end fit')
 }
 
 
-fitness(0)
+//fitness(0)
 
 
 
@@ -190,9 +194,26 @@ async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
     }
 }
 
+function reset_UserTime(){
+    d=new Date()
+    User.updateMany({},{time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8)})
+        .then(response=>{console.log("update")})
+        .catch(error=>{console.log("error update")})
+}
+
+function resetAttractions(){
+    d=new Date()
+    Attraction.updateMany({},{countNow:0,time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8)})
+        .then(response=>{console.log("update attraction")})
+        .catch(error=>{console.log("error update attraction")})
+}
+
 // d=new Date()
 //
-//
+// console.log(d.getHours())
+// if(d.getHours()==15){
+//     console.log("fffff")
+// }
 // d.setHours(8, 0, 0)
 // console.log(d)
 
