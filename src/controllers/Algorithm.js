@@ -6,7 +6,8 @@ const db = mongoose.connection;
 //import collections
 const attractions = db.collection("attractions");
 const users = db.collection("users");
-const individuals = db.collection("individuals");
+// const individuals = db.collection("individuals");
+var attractions2 = db.collection("attractions");
 
 //requires
 const Individual= require('../models/individual')
@@ -14,57 +15,79 @@ const generalVariabl =require('../models/generalVariables');
 const Attraction =require('../models/attraction');
 const User = require('../models/users');
 
+// const variable
+const NUM_POP=10
+const NUM_PARENTS=4
+const NUM_DELETE=4
 
 
 
+function Evolution() {
+    var sortedFitness_arr=[]
+    var parents_arr=[]
+    var delete_arr=[]
+    var i
 
+    for ( i = 0; i < NUM_POP; ++i) {
+        sortedFitness_arr.push([fitness(i),i]) // דוחפים את הערך של כל פריט ואת את הID שלו שזה הi
+    }
+    sortedFitness_arr.sort()// ממיינים את המערך של כל הפיטנסים
+    console.log(sortedFitness_arr)
 
-var add_minutes =  function (dt, minutes) {
-    return new Date(dt.getTime() + minutes*60000);
+    // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
+    for(;;)
+    {
+        // selection
+        // בוחרים את הפיטנסים הכי קטנים שיהיו ההורים לדור הבא
+        for (let j=0;j<NUM_PARENTS;j++)
+            parents_arr.push(sortedFitness_arr[j])
+
+        // creat new 3 pop in mongo
+        // שולחים את ההורים עם הid לקרוסבר שיצור ילדים חדשים במונגו החל מהid שנשלח
+        crossover(parents_arr,i)
+
+        //  מעריכים את הפרטים החדשים באוכלסיה (הילדים) עם id חדש החל מהi הקודם, מכניסים אותם למערך הפיטנסים הכללי
+        for (let k = i ; k < i+NUM_PARENTS; ++k) {
+            sortedFitness_arr.push([fitness(k),k])
+        }
+        // ממיינים שוב את המערך עם הפיטנס שהיו עד כה + הפיטנסים החדשים של הילדים
+        sortedFitness_arr.sort()
+        console.log(sortedFitness_arr)
+
+        //מכניסים את הפרטים שנרצה למחוק לתוך מערך שאותו נשלח לדליט אינדיבדואל
+        for (let i=sortedFitness_arr.length-1 ; i > (sortedFitness_arr.length-NUM_DELETE); --i)
+            delete_arr.push(sortedFitness_arr[i][1])
+        // משמיטים את הפרטים הפחות טובים גם מהמערך הכללי של הפיטנסים
+        for(let i=0;i<NUM_DELETE;i++)
+            sortedFitness_arr.pop()
+        // משמיטים את הפרטים הפחות טובים מהמונגו
+        deleteIndividual(delete_arr)
+
+        // עדכון של כל הI של הפופלישיין
+
+    }
+    //return של הפיטנס הכי קטן-הכי טוב
 }
 
-var add_hours =  function (dt, hours) {
-    return new Date(dt.getTime() + hours*3600000);
-}
-
-// console.log("the fit of population: ",fit1 , fit2 , fit3 , fit4 , fit5 , fit6 )
 
 
-// מכאן מתחיל לולאת for  }
-// Selection- לבחור את ההכי טובים - הכי נמוכים
+a=[[12,1],[15,2],[30,3],[20,4]]
 
 
 
+function crossover(parents_arr,i){
 
 
-
-// crossover - בין הפרטים שבחרנו בשלב הקודם
-// pop_arr=[pop_exmp1,pop_exmp2,pop_exmp3,pop_exmp4,pop_exmp5,pop_exmp6]
-// x=pop_arr[0]
-// console.log('try: ', x[0])
-//
-//
-// function crossover(pop_arr) {
-//
-//     for (let i=0; i<pop_arr.length;++i) {
-//
-//
-//     }
-//
-// }
 
 // מוטציה על הילדים מהשלב הקודם
 
-// מעריכים את הפרטים החדשים באוכלסיה
-
-// משמיטים את הפרטים הפחות טובים
-
-// כאן מסתיימת לולאת for {
+}
 
 
 
-var x = 0;
 
+
+//1
 async function fitness(popID){
     let individualDoc = await Individual.findOne({popID: popID})
     max=0
@@ -132,15 +155,8 @@ async function fitness(popID){
     reset_UserTime()
     resetAttractions()
     console.log('end fit')
+    return avg
 }
-
-
-//fitness(0)
-
-
-
-
-
 async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
     console.log('send UserID: ',userID,'attID',attractionID)
 
@@ -194,13 +210,13 @@ async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
     }
 }
 
+//reset database
 function reset_UserTime(){
     d=new Date()
     User.updateMany({},{time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8)})
         .then(response=>{console.log("update")})
         .catch(error=>{console.log("error update")})
 }
-
 function resetAttractions(){
     d=new Date()
     Attraction.updateMany({},{countNow:0,time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8)})
@@ -208,14 +224,22 @@ function resetAttractions(){
         .catch(error=>{console.log("error update attraction")})
 }
 
-// d=new Date()
-//
-// console.log(d.getHours())
-// if(d.getHours()==15){
-//     console.log("fffff")
-// }
-// d.setHours(8, 0, 0)
-// console.log(d)
+function deleteIndividual(delete_arr){
 
+    Individual.deleteMany({popID:{$in:delete_arr}})
+        .then(response=>{
+            console.log('Individuals Deleted successfully')
+        })
+        .catch(error => {
+            console.log('error Individuals Delete')
+        })
+}
 
+//time functions
+var add_minutes =  function (dt, minutes) {
+    return new Date(dt.getTime() + minutes*60000);
+}
+var add_hours =  function (dt, hours) {
+    return new Date(dt.getTime() + hours*3600000);
+}
 

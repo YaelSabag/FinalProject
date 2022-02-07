@@ -3,6 +3,9 @@ const app = express()
 const PORT = process.env.PORT || 3000
 const http = require('http')
 const Attraction =require('./src/models/attraction');
+const Individual =require('./src/controllers/individualController');
+
+
 
 //env
 const dotenv=require('dotenv')
@@ -128,13 +131,19 @@ app.get('/', (req, res) => {
 })
 
 
+
 app.listen(PORT, hostname, ()=> console.log(`server running at: http://${hostname}:${PORT}`))
 
 
-
-
-
-
+// var Flag=0
+// while (1>0) {
+//     d = new Date()
+//     if (d.getHours() == 14 && Flag==0) {
+//         console.log('sucss')
+//         Individual.creatInitialIndividual()
+//         Flag=1
+//     }
+// }
 
 
 

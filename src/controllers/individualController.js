@@ -53,7 +53,7 @@ const creatInitialIndividual= (req,res)=> {
                 mainArrayGV.MainArray.push([u.selected_attractions,u.userID,schedule])
             });
             mainArrayGV.save().then(response=>{
-                res.send(response)
+               console.log(response)
             })
             console.log('main array', mainArray)
             console.log('mainArrayGV', mainArrayGV)
@@ -119,7 +119,7 @@ function shuffle(array) {
     return array;
 }
 
-const deleteIndividual= (req,res,next)=>{
+const deleteAllIndividual= (req,res,next)=>{
     //const userID=req.body.userID
     Individual.deleteMany()
         .then(response=>{
@@ -129,6 +129,10 @@ const deleteIndividual= (req,res,next)=>{
             res.send('error Individuals Delete')
         })
 }
+
+
+
+
 
 const makePopulation = (req,res)=>
 {
@@ -147,6 +151,7 @@ const DateToString= ()=> {
 }
 
 
+
 module.exports = {
     getIndividual,
     addIndividual,
@@ -155,5 +160,5 @@ module.exports = {
     shuffle,
     DateToString,
     makePopulation,
-    deleteIndividual
+    deleteAllIndividual
 }
