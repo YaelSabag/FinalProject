@@ -23,14 +23,16 @@ const login= (req, res) => {
     console.log(req.query)
     User.findOne({ email }).then(response => {
         if (password == response.password) {
-            res.send('ok')
+            res.send(response)
         }
         else {
             res.send('Invalid password')
+            console.log('Invalid password')
         }
     })
     .catch(error => {
         res.send('Invalid username')
+        console.log('Invalid username')
 
     })
 }
@@ -38,17 +40,15 @@ const login= (req, res) => {
 
 
 const getUserByID= (req,res,next)=>{
+    console.log('getUserByID')
     let userID=req.query.userID
-    User.find(userID)
+    User.findOne({userID:userID})
         .then(response=>{
-            res.json({
-                response
-            })
+            res.send(response)
+            console.log('the user:',response)
         })
         .catch(error => {
-            res.json({
-                message: 'An error Occured!'
-            })
+            res.send('user not found')
         })
 
 }
