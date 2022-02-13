@@ -58,19 +58,19 @@ const addUser= (req,res,next)=>{
     console.log("params", req.params)
     console.log("query", req.query)
     const user=new User({
-        // userID:req.query.userID,
-        // fullName:req.query.fullName,
-        // email:req.query.email,
-        // password:req.query.password,
-        // age:req.query.age,
-        // height:req.query.height
-        userID:9090,
-        fullName:"yael",
-        email:"yyyy@gmail.com",
-        password:"123456",
-        age:22,
-        height:1.78,
-        selected_attractions:[2,3,4,1]
+        userID:req.query.userID,
+        fullName:req.query.fullName,
+        email:req.query.email,
+        password:req.query.password,
+        age:req.query.age,
+        height:req.query.height
+        // userID:9090,
+        // fullName:"yael",
+        // email:"yyyy@gmail.com",
+        // password:"123456",
+        // age:22,
+        // height:1.78,
+        // selected_attractions:[2,3,4,1]
     })
     user.save()
         .then(response=>{

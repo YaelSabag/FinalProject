@@ -7,7 +7,7 @@ var add_hours =  function (dt, hours) {
     return new Date(dt.getTime() + hours*3600000);
 }
 
-var t= add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8).getTime()
+var t= add_hours(new Date(d.getFullYear(),d.getMonth(),d.getUTCDate()), 8).getTime()
 
 
 const userSchema = new Schema({
@@ -41,7 +41,7 @@ const userSchema = new Schema({
     },
     time:{
         type:Date,
-        default:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8)
+        default:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 1)
     },
     selected_attractions: {
         type: Array,

@@ -1,13 +1,17 @@
 // connection to db
 const mongoose = require('mongoose')
+
 mongoose.connect('mongodb+srv://margalit:cy426316@teampark.lohoh.mongodb.net/TeamPark?retryWrites=true&w=majority')
-const db = mongoose.connection;
+    .then(response=>{console.log('connected')})
+
+// setTimeout(Evolution, 2000)
+// const db = mongoose.connection;
 
 //import collections
-const attractions = db.collection("attractions");
-const users = db.collection("users");
-// const individuals = db.collection("individuals");
-var attractions2 = db.collection("attractions");
+// const attractions = db.collection("attractions");
+// const users = db.collection("users");
+// // const individuals = db.collection("individuals");
+// var attractions2 = db.collection("attractions");
 
 //requires
 const Individual= require('../models/individual')
@@ -22,60 +26,123 @@ const NUM_DELETE=4
 
 
 
-function Evolution() {
-    var sortedFitness_arr=[]
-    var parents_arr=[]
-    var delete_arr=[]
-    var i
-
-    for ( i = 0; i < NUM_POP; ++i) {
-        sortedFitness_arr.push([fitness(i),i]) // דוחפים את הערך של כל פריט ואת את הID שלו שזה הi
+async function Evolution() {
+    let MINtemp
+    let iteration
+    let sortedFitness_arr=[]
+    let parents_arr=[]
+    let delete_arr=[]
+    let i
+    console.log('start')
+    for ( i = 1; i <= NUM_POP; ++i) {
+        let fit=fitness(i).then(response=>{console.log('fitness succ')})
+        sortedFitness_arr.push([fit,i])
+        // דוחפים את הערך של כל פריט ואת את הID שלו שזה הi
+        let promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve("evol done :"), 3000)
+        });
+        let result = await promise;
+        console.log(result,i);
     }
     sortedFitness_arr.sort()// ממיינים את המערך של כל הפיטנסים
     console.log(sortedFitness_arr)
-
+    MINtemp=sortedFitness_arr[0]
     // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
-    for(;;)
-    {
-        // selection
-        // בוחרים את הפיטנסים הכי קטנים שיהיו ההורים לדור הבא
-        for (let j=0;j<NUM_PARENTS;j++)
-            parents_arr.push(sortedFitness_arr[j])
-
-        // creat new 3 pop in mongo
-        // שולחים את ההורים עם הid לקרוסבר שיצור ילדים חדשים במונגו החל מהid שנשלח
-        crossover(parents_arr,i)
-
-        //  מעריכים את הפרטים החדשים באוכלסיה (הילדים) עם id חדש החל מהi הקודם, מכניסים אותם למערך הפיטנסים הכללי
-        for (let k = i ; k < i+NUM_PARENTS; ++k) {
-            sortedFitness_arr.push([fitness(k),k])
-        }
-        // ממיינים שוב את המערך עם הפיטנס שהיו עד כה + הפיטנסים החדשים של הילדים
-        sortedFitness_arr.sort()
-        console.log(sortedFitness_arr)
-
-        //מכניסים את הפרטים שנרצה למחוק לתוך מערך שאותו נשלח לדליט אינדיבדואל
-        for (let i=sortedFitness_arr.length-1 ; i > (sortedFitness_arr.length-NUM_DELETE); --i)
-            delete_arr.push(sortedFitness_arr[i][1])
-        // משמיטים את הפרטים הפחות טובים גם מהמערך הכללי של הפיטנסים
-        for(let i=0;i<NUM_DELETE;i++)
-            sortedFitness_arr.pop()
-        // משמיטים את הפרטים הפחות טובים מהמונגו
-        deleteIndividual(delete_arr)
-
-        // עדכון של כל הI של הפופלישיין
-        updatePopID(delete_arr)
-    }
+    // for(iteration=0 ; iteration<1 ;iteration++)
+    // {
+    //     console.log('iteration :',iteration)
+    //     // selection
+    //     // בוחרים את הפיטנסים הכי קטנים שיהיו ההורים לדור הבא
+    //     for (let j=0;j<NUM_PARENTS;j++)
+    //         parents_arr.push(sortedFitness_arr[j][1])
+    //
+    //     // creat new 3 pop in mongo
+    //     // שולחים את ההורים עם הid לקרוסבר שיצור ילדים חדשים במונגו החל מהid שנשלח
+    //     crossover(parents_arr, i).then(response=>{console.log('succeeded crossover')})
+    //
+    //     //  מעריכים את הפרטים החדשים באוכלסיה (הילדים) עם id חדש החל מהi הקודם, מכניסים אותם למערך הפיטנסים הכללי
+    //     console.log('start fittnes')
+    //     for (let k = i ; k < i+NUM_PARENTS; ++k) {
+    //         sortedFitness_arr.push([fitness(k),k])
+    //
+    //         let promise = new Promise((resolve, reject) => {
+    //             setTimeout(() => resolve("done!"), 3000)
+    //         });
+    //         let result = await promise;
+    //         console.log(result);
+    //     }
+    //     // ממיינים שוב את המערך עם הפיטנס שהיו עד כה + הפיטנסים החדשים של הילדים
+    //     sortedFitness_arr.sort()
+    //     // console.log(sortedFitness_arr)
+    //
+    //     //מכניסים את הפרטים שנרצה למחוק לתוך מערך שאותו נשלח לדליט אינדיבדואל
+    //
+    //     for (let i=sortedFitness_arr.length-1 ; i > (sortedFitness_arr.length-NUM_DELETE); --i)
+    //         delete_arr.push(sortedFitness_arr[i][1])
+    //     // משמיטים את הפרטים הפחות טובים גם מהמערך הכללי של הפיטנסים
+    //     for(let i=0;i<NUM_DELETE;i++)
+    //         sortedFitness_arr.pop()
+    //     // משמיטים את הפרטים הפחות טובים מהמונגו
+    //     console.log('delete the worse individual')
+    //     deleteIndividual(delete_arr).then(response=>{console.log('deleteIndividual succ')})
+    //
+    //     console.log('update id pop')
+    //     // עדכון של כל הI של הפופלישיין
+    //     updatePopID(delete_arr).then(response=>{console.log('updatePopID succ')})
+    //
+    //     console.log('sorted arr [0]',sortedFitness_arr[0])
+    //     if(sortedFitness_arr[0][0]< MINtemp[0]){
+    //         MINtemp=sortedFitness_arr[0]
+    //     }
+    //     console.log('MINtemp',MINtemp)
+    // }
     //return של הפיטנס הכי קטן-הכי טוב
+   console.log('=====================res====================',MINtemp)
+    // return MINtemp
 }
 
 
 
-a=[[12,1],[15,2],[30,3],[20,4]]
+async function crossover(parents_arr,newID){
+    let child_A=[]
+    let child_B=[]
+    let temp=[]
+    let index
+    for(let i=0; i < parents_arr.length;i=i+2){
+        console.log('i',i)
+        let flag1=0
+        let flag2=0
+        await Individual.find().then(response=>{
+            response.forEach(function (u){
+                index=Math.trunc((u.array.length)/2)
+                if(u.popID==parents_arr[i]&& flag1==0){
+                    console.log('if 1')
+                    child_A.push(...(u.array.splice(0,index)))
+                    temp.push(...(u.array.splice(-index)))
+                    flag1=1
+                }
+                if(u.popID==parents_arr[i+1]&& flag2==0){
+                    console.log('if 2')
+                    child_A.push(...(u.array.splice(-index)))
+                    child_B.push(...(u.array.splice(0,index)))
+                    child_B=child_B.concat(...(temp))
+                    flag2=1
+                }
+            })
+            //save to mongo
+            let individual_1= new Individual({popID:newID+i,array:child_A})
+            let individual_2= new Individual({popID:newID+i+1,array:child_B})
+            individual_1.save()
+            individual_2.save()
+            // console.log('A',child_A)
+            // console.log('B',child_B)
+            child_A=[]
+            child_B=[]
+            temp=[]
+        })
 
 
-
-function crossover(parents_arr,i){
+    }
 
 
 
@@ -83,13 +150,15 @@ function crossover(parents_arr,i){
 
 }
 
+// crossover([1,2,3,4,5,6],11)
 
 
-function updatePopID(delete_arr) {
+async function updatePopID(delete_arr) {
     let childrenID_arr = [NUM_POP + 1, NUM_POP + 2, NUM_POP + 3, NUM_POP + 4]
     let sizeDelete = delete_arr.length
+    delete_arr.sort().reverse()
     for (let i = 0; i < sizeDelete; ++i) {
-        Individual.findOneAndUpdate({popID: {$in: childrenID_arr}}, {popID: delete_arr[delete_arr.length - 1]})
+        await Individual.findOneAndUpdate({popID: {$in: childrenID_arr}}, {popID: delete_arr[delete_arr.length - 1]})
         .then(response => {
             console.log("update popID successful")
         })
@@ -102,34 +171,41 @@ function updatePopID(delete_arr) {
 
 
 //1
-async function fitness(popID){
+async function fitness(popID) {
     let individualDoc = await Individual.findOne({popID: popID})
-    max=0
+    let max = 0
+    console.log(individualDoc);
+    let promise1 = new Promise((resolve, reject) => {
+        setTimeout(() => resolve("fit start"), 1800)
+    });
+    let result1 = await promise1;
+    console.log(result1);
+
     for (let i=0;i<individualDoc.array.length;i++){
         if( individualDoc.array[i][0].length > max)
             max=individualDoc.array[i][0].length
     }
-    console.log(max)
+    console.log('max',max)
 
-    for (var j=0; j< max ; j++)//עמודה
+    for (let j=0; j< max ; j++)//עמודה כמות אנשים
     {
-        for (var i = 0; i < individualDoc.array.length; i++) //שורה
+        for (let i = 0; i < individualDoc.array.length; i++) //שורה כמות מתקנים
         {
             switch (individualDoc.array[i][0][j]) { // המתקן שהבנאדם בחר
-                case 1:
-                    Enter_To_Attraction1(individualDoc.array[i][1], 11, popID, i)// id person, אובייקט של האטרקציה,
-                break;
+                case 1:   // id person, אובייקט של האטרקציה,
+                    Enter_To_Attraction1(individualDoc.array[i][1], 11, popID, i).then(response=>{console.log('Enter_To_Attraction1 succ')})
+                     break;
                 case 2:
-                    Enter_To_Attraction1(individualDoc.array[i][1], 22, popID, i, j)
+                    Enter_To_Attraction1(individualDoc.array[i][1], 22, popID, i, j).then(response=>{console.log('Enter_To_Attraction1 succ')})
                     break;
                 case 3:
-                    Enter_To_Attraction1(individualDoc.array[i][1], 33, popID, i, j)
+                    Enter_To_Attraction1(individualDoc.array[i][1], 33, popID, i, j).then(response=>{console.log('Enter_To_Attraction1 succ')})
                     break;
                 case 4:
-                    Enter_To_Attraction1(individualDoc.array[i][1], 44, popID, i, j)
+                    Enter_To_Attraction1(individualDoc.array[i][1], 44, popID, i, j).then(response=>{console.log('Enter_To_Attraction1 succ')})
                     break;
                 case 5:
-                    Enter_To_Attraction1(individualDoc.array[i][1], 55, popID, i, j)
+                    Enter_To_Attraction1(individualDoc.array[i][1], 55, popID, i, j).then(response=>{console.log('Enter_To_Attraction1 succ')})
                     break;
                 default :
                     console.log('end of vector '+i)
@@ -139,38 +215,49 @@ async function fitness(popID){
             let promise = new Promise((resolve, reject) => {
                 setTimeout(() => resolve("done!"), 1800)
             });
-
             let result = await promise;
             console.log(result);
         }
     }
-    sum = 0
-    d = new Date()
-    d.setHours(8,0,0)
+    let sum = 0
+    let d = new Date()
+    d.setHours(2,0,0)
     console.log("d",d)
     User.find().then(
         response =>{
             response.forEach(function(u) {
-                temp = (u.time-d)/60000
+                let temp = (u.time-d)/60000
 
                 console.log('temp',temp)
                 sum +=temp
             });
         })
     let promise = new Promise((resolve, reject) => {
-        setTimeout(() => resolve("done!"), 1000)
+        setTimeout(() => resolve("done!"), 2000)
     });
 
     let result = await promise;
     console.log('result', result);
-    avg = sum/individualDoc.array.length
+
+    let avg = sum/individualDoc.array.length
     console.log('avg',avg)
     await Individual.findOneAndUpdate({popID: popID},{fitness:avg})
-    reset_UserTime()
-    resetAttractions()
+    reset_UserTime().then(response=>{console.log('reset_UserTime in fitness succ')})
+    let promise2 = new Promise((resolve, reject) => {
+        setTimeout(() => resolve("fit start"), 2000)
+    });
+    let result2 = await promise2;
+    console.log(result2);
+    resetAttractions().then(response=>{console.log('resetAttractions in fitness succ')})
+    let promise3 = new Promise((resolve, reject) => {
+        setTimeout(() => resolve("fit start"), 2000)
+    });
+    let result3 = await promise3;
+    console.log(result3);
     console.log('end fit')
     return avg
 }
+
 async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
     console.log('send UserID: ',userID,'attID',attractionID)
 
@@ -225,22 +312,25 @@ async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
 }
 
 //reset database
-function reset_UserTime(){
-    d=new Date()
-    User.updateMany({},{time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8)})
+async function reset_UserTime(){
+    let d=new Date()
+
+    await User.updateMany({},{time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 2)})
         .then(response=>{console.log("update")})
         .catch(error=>{console.log("error update")})
+
 }
-function resetAttractions(){
-    d=new Date()
-    Attraction.updateMany({},{countNow:0,time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDay()), 8)})
+async function resetAttractions(){
+    let d=new Date()
+    await Attraction.updateMany({},{countNow:0,time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 2)})
         .then(response=>{console.log("update attraction")})
         .catch(error=>{console.log("error update attraction")})
+
 }
 
-function deleteIndividual(delete_arr){
+async function deleteIndividual(delete_arr){
 
-    Individual.deleteMany({popID:{$in:delete_arr}})
+    await Individual.deleteMany({popID:{$in:delete_arr}})
         .then(response=>{
             console.log('Individuals Deleted successfully')
         })
@@ -250,10 +340,23 @@ function deleteIndividual(delete_arr){
 }
 
 //time functions
-var add_minutes =  function (dt, minutes) {
+const add_minutes =  function (dt, minutes) {
     return new Date(dt.getTime() + minutes*60000);
 }
-var add_hours =  function (dt, hours) {
+const add_hours =  function (dt, hours) {
     return new Date(dt.getTime() + hours*3600000);
 }
+
+
+//
+
+// reset_UserTime().then(response=>{console.log('reset_UserTime succ')})
+// resetAttractions().then(response=>{console.log('resetAttractions succ')})
+
+// //
+Evolution().then(response=>{
+    console.log('========end======')})
+// //
+// // fitness(1).then(response=>{console.log('rrrrr')})
+
 

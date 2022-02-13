@@ -10,6 +10,7 @@ const DateToString = function (d) {
     return `${date}/${month}/${year}`;
     console.log(`${date}/${month}/${year}`)
 };
+// initial individual
 const generalVariablesSchema = new Schema({
     MainArray:[],
     date:{
@@ -17,8 +18,6 @@ const generalVariablesSchema = new Schema({
         default: DateToString(d),
         //unique: true
     }
-
-
 
 })
 
