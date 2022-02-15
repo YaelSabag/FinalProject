@@ -85,16 +85,18 @@ const addUser= (req,res,next)=>{
 
 
 const updateUser= (req,res,next)=>{
-    const userID=req.body.userID
+    console.log("updateUser")
+    console.log(req.query)
+    const userID=req.query.userID
         const updateData= {
-            userID:req.query.userID,
+            //userID:req.query.userID,
             fullName:req.query.fullName,
-            email:req.query.email,
+            //email:req.query.email,
             password:req.query.password,
             age:req.query.age,
             height:req.query.height
         }
-    User.findByIdAndUpdate(userID,{$set:updateData})
+    User.findOneAndUpdate({userID},{$set:updateData})
         .then(response=>{
             res.send('User Updated successfully')
         })
