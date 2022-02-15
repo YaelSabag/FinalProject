@@ -1,6 +1,8 @@
 const User=require('../models/users')
 const mongoose = require ('mongoose')
 const {bcrypt} = require("buffer");
+const general = require('../models/generalVariables')
+
 
 //show the list of Users
 const getUsers= (req,res)=> {
@@ -132,6 +134,31 @@ const deleteUser= (req,res,next)=>{
         })
 }
 
+const getRoute=(req, res)=>{
+    console.log("getRoute")
+    let id = req.query.id
+    let check
+    let x = 0
+    general.findOne({name:'flag'})
+        .then(r=>{console.log(r)
+            if(r.flag == 0) {
+                console.log("flag", r.flag)
+                res.send(r)
+            }
+            else {
+                console.log("else", r.flag)
+                User.findOne({userID: id})
+                    .then(response => {
+                        console.log(response)
+                        res.send(response)
+                    })
+            }
+        })
+        .catch(error=>{res.send("error getRoute")})
+}
+
+
+
 
 
 module.exports={
@@ -141,5 +168,6 @@ module.exports={
     updateUser,
     deleteUser,
     login,
-    selected_attraction_update
+    selected_attraction_update,
+    getRoute
 }

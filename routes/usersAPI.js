@@ -8,4 +8,5 @@ router.post('/updateUser', userController.updateUser)
 router.post('/selected_attraction_update', userController.selected_attraction_update)
 router.post('/deleteUser', userController.deleteUser)
 router.post('/login', userController.login)
+router.post('/getRoute', userController.getRoute)
 module.exports = router

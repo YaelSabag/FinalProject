@@ -97,7 +97,8 @@ async function Evolution() {
     //     console.log('MINtemp',MINtemp)
     // }
     //return של הפיטנס הכי קטן-הכי טוב
-   console.log('=====================res====================',MINtemp)
+    console.log('=====================res====================',MINtemp)
+    generalVariabl.findOneAndUpdate({flag:0},{flag:1})
     // return MINtemp
 }
 
@@ -159,12 +160,12 @@ async function updatePopID(delete_arr) {
     delete_arr.sort().reverse()
     for (let i = 0; i < sizeDelete; ++i) {
         await Individual.findOneAndUpdate({popID: {$in: childrenID_arr}}, {popID: delete_arr[delete_arr.length - 1]})
-        .then(response => {
-            console.log("update popID successful")
-        })
-        .catch(error => {
-            console.log("error update popID")
-        })
+            .then(response => {
+                console.log("update popID successful")
+            })
+            .catch(error => {
+                console.log("error update popID")
+            })
         delete_arr.pop()
     }
 }
@@ -194,7 +195,7 @@ async function fitness(popID) {
             switch (individualDoc.array[i][0][j]) { // המתקן שהבנאדם בחר
                 case 1:   // id person, אובייקט של האטרקציה,
                     Enter_To_Attraction1(individualDoc.array[i][1], 11, popID, i).then(response=>{console.log('Enter_To_Attraction1 succ')})
-                     break;
+                    break;
                 case 2:
                     Enter_To_Attraction1(individualDoc.array[i][1], 22, popID, i, j).then(response=>{console.log('Enter_To_Attraction1 succ')})
                     break;
@@ -275,7 +276,7 @@ async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
         await Individual.findOneAndUpdate({popID:popID},{$set:{array: individualDoc.array}})
     }
 
-        // יש אנשים כבר בתור ואנחנו רוצים להסויף מישהו
+    // יש אנשים כבר בתור ואנחנו רוצים להסויף מישהו
     else {
         // אם הזמן של היוזר קטן מהזמן הנוכחי של המתקן כלומר שאפשר להכניס אותו לסיבוב הקרוב && שיש מקום בסיבוב
         if (userDoc.time <= attractionDoc.time && attractionDoc.countNow < attractionDoc.capacity) {
@@ -346,17 +347,4 @@ const add_minutes =  function (dt, minutes) {
 const add_hours =  function (dt, hours) {
     return new Date(dt.getTime() + hours*3600000);
 }
-
-
-//
-
-// reset_UserTime().then(response=>{console.log('reset_UserTime succ')})
-// resetAttractions().then(response=>{console.log('resetAttractions succ')})
-
-// //
-Evolution().then(response=>{
-    console.log('========end======')})
-// //
-// // fitness(1).then(response=>{console.log('rrrrr')})
-
 

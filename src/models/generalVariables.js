@@ -17,6 +17,12 @@ const generalVariablesSchema = new Schema({
         type: String,
         default: DateToString(d),
         //unique: true
+    },
+    flag:{
+        type: Number
+    },
+    name:{
+        type: String
     }
 
 })
