@@ -76,8 +76,7 @@ const Randomization= (req,res,id)=> {
     generalVariabl.find()
        .then(response => {
            response.forEach(function(u) {
-               //if(u.date==today and u.name=='population')
-               if(u.date==today) {
+               if(u.date==today && u.name=="population"){
                    arr.MainArray=(u.MainArray)
                 }
            });

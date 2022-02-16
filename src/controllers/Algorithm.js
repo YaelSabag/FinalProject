@@ -42,10 +42,10 @@ async function Evolution() {
             setTimeout(() => resolve("evol done :"), 3000)
         });
         let result = await promise;
-        console.log(result,i);
+        console.log("line 45: ",result,i);
     }
     sortedFitness_arr.sort()// ממיינים את המערך של כל הפיטנסים
-    console.log(sortedFitness_arr)
+    console.log("line 48: ",sortedFitness_arr)
     MINtemp=sortedFitness_arr[0]
     // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
     // for(iteration=0 ; iteration<1 ;iteration++)
@@ -98,7 +98,7 @@ async function Evolution() {
     // }
     //return של הפיטנס הכי קטן-הכי טוב
     console.log('=====================res====================',MINtemp)
-    generalVariabl.findOneAndUpdate({flag:0},{flag:1})
+    // generalVariabl.findOneAndUpdate({flag:0},{flag:1})
     // return MINtemp
 }
 
@@ -175,73 +175,56 @@ async function updatePopID(delete_arr) {
 async function fitness(popID) {
     let individualDoc = await Individual.findOne({popID: popID})
     let max = 0
-    console.log(individualDoc);
+    console.log("line 178: ",individualDoc);
     let promise1 = new Promise((resolve, reject) => {
         setTimeout(() => resolve("fit start"), 1800)
     });
     let result1 = await promise1;
-    console.log(result1);
+    console.log("line 183: ",result1);
 
     for (let i=0;i<individualDoc.array.length;i++){
         if( individualDoc.array[i][0].length > max)
             max=individualDoc.array[i][0].length
     }
-    console.log('max',max)
+    console.log('line 189: max',max)
 
     for (let j=0; j< max ; j++)//עמודה כמות אנשים
     {
         for (let i = 0; i < individualDoc.array.length; i++) //שורה כמות מתקנים
         {
-            switch (individualDoc.array[i][0][j]) { // המתקן שהבנאדם בחר
-                case 1:   // id person, אובייקט של האטרקציה,
-                    Enter_To_Attraction1(individualDoc.array[i][1], 11, popID, i).then(response=>{console.log('Enter_To_Attraction1 succ')})
-                    break;
-                case 2:
-                    Enter_To_Attraction1(individualDoc.array[i][1], 22, popID, i, j).then(response=>{console.log('Enter_To_Attraction1 succ')})
-                    break;
-                case 3:
-                    Enter_To_Attraction1(individualDoc.array[i][1], 33, popID, i, j).then(response=>{console.log('Enter_To_Attraction1 succ')})
-                    break;
-                case 4:
-                    Enter_To_Attraction1(individualDoc.array[i][1], 44, popID, i, j).then(response=>{console.log('Enter_To_Attraction1 succ')})
-                    break;
-                case 5:
-                    Enter_To_Attraction1(individualDoc.array[i][1], 55, popID, i, j).then(response=>{console.log('Enter_To_Attraction1 succ')})
-                    break;
-                default :
-                    console.log('end of vector '+i)
-                    break;
-
-            }
+            Enter_To_Attraction1(individualDoc.array[i][1], individualDoc.array[i][0][j], popID, i)
+                .then(response => {
+                    console.log('line 197: Enter_To_Attraction1 succ')
+                })
             let promise = new Promise((resolve, reject) => {
                 setTimeout(() => resolve("done!"), 1800)
             });
             let result = await promise;
-            console.log(result);
+            console.log("line 203: ",result);
         }
     }
     let sum = 0
     let d = new Date()
     d.setHours(2,0,0)
-    console.log("d",d)
+    // console.log("d",d)
     User.find().then(
         response =>{
             response.forEach(function(u) {
                 let temp = (u.time-d)/60000
 
-                console.log('temp',temp)
+                console.log('line 215: temp',temp)
                 sum +=temp
             });
         })
     let promise = new Promise((resolve, reject) => {
-        setTimeout(() => resolve("done!"), 2000)
+        setTimeout(() => resolve("line 220: done!"), 2000)
     });
 
     let result = await promise;
-    console.log('result', result);
+    console.log('line 224: result', result);
 
     let avg = sum/individualDoc.array.length
-    console.log('avg',avg)
+    console.log('line 227: avg',avg)
     await Individual.findOneAndUpdate({popID: popID},{fitness:avg})
     reset_UserTime().then(response=>{console.log('reset_UserTime in fitness succ')})
     let promise2 = new Promise((resolve, reject) => {
@@ -251,7 +234,7 @@ async function fitness(popID) {
     console.log(result2);
     resetAttractions().then(response=>{console.log('resetAttractions in fitness succ')})
     let promise3 = new Promise((resolve, reject) => {
-        setTimeout(() => resolve("fit start"), 2000)
+        setTimeout(() => resolve("line 237: fit start"), 2000)
     });
     let result3 = await promise3;
     console.log(result3);
@@ -259,6 +242,7 @@ async function fitness(popID) {
     return avg
 }
 
+//2
 async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
     console.log('send UserID: ',userID,'attID',attractionID)
 
@@ -316,15 +300,15 @@ async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
 async function reset_UserTime(){
     let d=new Date()
 
-    await User.updateMany({},{time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 2)})
-        .then(response=>{console.log("update")})
+    await User.updateMany({},{time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 8)})
+        .then(response=>{console.log("line 303: update")})
         .catch(error=>{console.log("error update")})
 
 }
 async function resetAttractions(){
     let d=new Date()
-    await Attraction.updateMany({},{countNow:0,time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 2)})
-        .then(response=>{console.log("update attraction")})
+    await Attraction.updateMany({},{countNow:0,time:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 8)})
+        .then(response=>{console.log("line 310: update attraction")})
         .catch(error=>{console.log("error update attraction")})
 
 }
@@ -347,4 +331,15 @@ const add_minutes =  function (dt, minutes) {
 const add_hours =  function (dt, hours) {
     return new Date(dt.getTime() + hours*3600000);
 }
+
+// //
+// reset_UserTime().then(response=>{console.log('reset_UserTime succ')})
+// resetAttractions().then(response=>{console.log('resetAttractions succ')})
+
+//
+Evolution().then(response=>{
+    console.log('========end======')})
+
+// fitness(1).then(response=>{console.log('rrrrr')})
+
 

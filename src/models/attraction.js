@@ -26,7 +26,7 @@ const attractionSchema = new Schema({
     },
     time:{
         type: Date,
-        default:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 1)
+        default:add_hours(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 8)
 
     },
     capacity:{
