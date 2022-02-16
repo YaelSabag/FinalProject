@@ -136,7 +136,7 @@ const deleteAllIndividual= (req,res,next)=>{
 
 const makePopulation = (req,res)=>
 {
-    for(let i =3; i<=10;++i)
+    for(let i =1; i<=6;++i)
     {
         Randomization(req,res,i)
     }

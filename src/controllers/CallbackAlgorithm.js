@@ -35,7 +35,7 @@ const add_minutes =  function (dt, minutes) {
 const add_hours =  function (dt, hours) {
     return new Date(dt.getTime() + hours*3600000);
 }
-
+let flag=0;
 
 //1
 async function fitness(popID,myCallback) {
@@ -49,43 +49,41 @@ async function fitness(popID,myCallback) {
     }
     console.log('line 189: max',max)
 
-    let i,flag,num=0;
+    let i,num=0;
     for (let j=0; j< max ;j++)//עמודה כמות אנשים
     {
-        for (i = 0; i < individualDoc.array.length; ) //שורה כמות מתקנים
+        for (i = 0; i < individualDoc.array.length;i++) //שורה כמות מתקנים
         {
-            while (i!= i+1) {
-                myCallback(individualDoc.array[i][1], individualDoc.array[i][0][j], popID, i)
+            if(typeof (individualDoc.array[i][0][j])!='undefined') {
+                flag = 0
+                await Enter_To_Attraction1(individualDoc.array[i][1], individualDoc.array[i][0][j], popID, i)
                     .then(response => {
-                        i = i + 1
-                        console.log('line 197: Enter_To_Attraction1 succ')
+                        console.log('line 59: Enter_To_Attraction1 succ')
                     })
-
             }
+            //while (flag==0){}
         }
     }
     let sum = 0
     let d = new Date()
-    d.setHours(2,0,0)
-    // console.log("d",d)
-    User.find().then(
+    d.setHours(8,0,0)
+    console.log("d",d)
+    await User.find().then(
         response =>{
             response.forEach(function(u) {
-                let temp = (u.time-d)/60000
-
-                console.log('line 215: temp',temp)
-                sum +=temp
+                sum= sum+(u.time-d)/60000
             });
         })
 
-
+    console.log("sum", sum)
+    console.log("individualDoc.array.length", individualDoc.array.length)
     let avg = sum/individualDoc.array.length
     console.log('line 227: avg',avg)
     await Individual.findOneAndUpdate({popID: popID},{fitness:avg})
 
-    reset_UserTime().then(response=>{console.log('reset_UserTime in fitness succ')})
-
-    resetAttractions().then(response=>{console.log('resetAttractions in fitness succ')})
+    // reset_UserTime().then(response=>{console.log('reset_UserTime in fitness succ')})
+    //
+    // resetAttractions().then(response=>{console.log('resetAttractions in fitness succ')})
 
     console.log('end fit')
     return avg
@@ -96,7 +94,7 @@ async function fitness(popID,myCallback) {
 
 
 //2
-async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
+async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
     console.log('send UserID: ',userID,'attID',attractionID)
 
     let individualDoc = await Individual.findOne({popID:popID})
@@ -147,6 +145,8 @@ async  function  Enter_To_Attraction1 (userID,attractionID,popID,i,j) {
             await Individual.findOneAndUpdate({popID:popID},{$set:{array: individualDoc.array}})
         }
     }
+    console.log("flag")
+    flag=1
     // return i+1;
 }
 
@@ -170,11 +170,11 @@ async function resetAttractions(){
 
 }
 
-//
+// //
 // reset_UserTime().then(response=>{console.log('reset_UserTime succ')})
 // resetAttractions().then(response=>{console.log('resetAttractions succ')})
 
-fitness(4, Enter_To_Attraction1).then(res=>{console.log("succeeded")})
+fitness(3).then(res=>{console.log("succeeded")})
 
 
 
