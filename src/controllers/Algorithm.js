@@ -20,7 +20,7 @@ const Attraction =require('../models/attraction');
 const User = require('../models/users');
 
 // const variable
-const NUM_POP=6
+const NUM_POP=10
 const NUM_PARENTS=4
 const NUM_DELETE=4
 
@@ -29,139 +29,158 @@ const NUM_DELETE=4
 async function Evolution() {
     let MINtemp
     let iteration
-    let sortedFitness_arr=[]
-    let parents_arr=[]
-    let delete_arr=[]
+    let sortedFitness_arr = []
+    let parents_arr = []
+    let delete_arr = []
     let i
     //let fit
     console.log('start')
-    for ( i = 1; i <= NUM_POP; ++i) {
-        await fitness(i).then(response=>{console.log('fitness succ',response)
-            sortedFitness_arr.push([response,i])
+    for (i = 1; i <= NUM_POP; ++i) {
+        await fitness(i).then(response => {
+            console.log('fitness succ', response)
+            sortedFitness_arr.push([response, i])
         })
-            .catch(error=>{console.log("error",error)})
+            .catch(error => {
+                console.log("error", error)
+            })
         //sortedFitness_arr.push([fit,i]) // דוחפים את הערך של כל פריט ואת את הID שלו שזה הi
         //let result = await promise;
     }
     sortedFitness_arr.sort()// ממיינים את המערך של כל הפיטנסים
-    console.log("line 48: ",sortedFitness_arr)
-    MINtemp=sortedFitness_arr[0]
+    console.log("line 48: ", sortedFitness_arr)
+    MINtemp = sortedFitness_arr[0]
     // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
-    // for(iteration=0 ; iteration<1 ;iteration++)
-    // {
-    //     console.log('iteration :',iteration)
-    //     // selection
-    //     // בוחרים את הפיטנסים הכי קטנים שיהיו ההורים לדור הבא
-        for (let j=0;j<NUM_PARENTS;j++)
+    for(iteration=0 ; iteration<2 ;iteration++)
+    {
+             console.log('iteration :',iteration)
+        //     // selection
+        //     // בוחרים את הפיטנסים הכי קטנים שיהיו ההורים לדור הבא
+        for (let j = 0; j < NUM_PARENTS; j++)
             parents_arr.push(sortedFitness_arr[j][1])
 
-    //     // creat new 3 pop in mongo
-    //     // שולחים את ההורים עם הid לקרוסבר שיצור ילדים חדשים במונגו החל מהid שנשלח
-        await crossover(parents_arr, i).then(response=>{console.log('succeeded crossover')})
-    //
-    //     //  מעריכים את הפרטים החדשים באוכלסיה (הילדים) עם id חדש החל מהi הקודם, מכניסים אותם למערך הפיטנסים הכללי
-    //     console.log('start fittnes')
-    //     for (let k = i ; k < i+NUM_PARENTS; ++k) {
-    //         sortedFitness_arr.push([fitness(k),k])
-    //
-    //         let promise = new Promise((resolve, reject) => {
-    //             setTimeout(() => resolve("done!"), 3000)
-    //         });
-    //         let result = await promise;
-    //         console.log(result);
-    //     }
-    //     // ממיינים שוב את המערך עם הפיטנס שהיו עד כה + הפיטנסים החדשים של הילדים
-    //     sortedFitness_arr.sort()
-    //     // console.log(sortedFitness_arr)
-    //
-    //     //מכניסים את הפרטים שנרצה למחוק לתוך מערך שאותו נשלח לדליט אינדיבדואל
-    //
-    //     for (let i=sortedFitness_arr.length-1 ; i > (sortedFitness_arr.length-NUM_DELETE); --i)
-    //         delete_arr.push(sortedFitness_arr[i][1])
-    //     // משמיטים את הפרטים הפחות טובים גם מהמערך הכללי של הפיטנסים
-    //     for(let i=0;i<NUM_DELETE;i++)
-    //         sortedFitness_arr.pop()
-    //     // משמיטים את הפרטים הפחות טובים מהמונגו
-    //     console.log('delete the worse individual')
-    //     deleteIndividual(delete_arr).then(response=>{console.log('deleteIndividual succ')})
-    //
-    //     console.log('update id pop')
-    //     // עדכון של כל הI של הפופלישיין
-    //     updatePopID(delete_arr).then(response=>{console.log('updatePopID succ')})
-    //
-    //     console.log('sorted arr [0]',sortedFitness_arr[0])
-    //     if(sortedFitness_arr[0][0]< MINtemp[0]){
-    //         MINtemp=sortedFitness_arr[0]
-    //     }
-    //     console.log('MINtemp',MINtemp)
-    // }
+        //     // creat new 3 pop in mongo
+        //     // שולחים את ההורים עם הid לקרוסבר שיצור ילדים חדשים במונגו החל מהid שנשלח
+        console.log(i, "-------------------------------------------------------------------------")
+        await crossover(parents_arr, i).then(response => {
+            console.log('succeeded crossover')
+        })
+
+        //     //  מעריכים את הפרטים החדשים באוכלסיה (הילדים) עם id חדש החל מהi הקודם, מכניסים אותם למערך הפיטנסים הכללי
+        //     console.log('start fittnes')
+
+        for (let k = i; k < i + NUM_PARENTS; ++k) {
+            await fitness(k).then(response => {
+                console.log('fitness 2 succ', response);
+                sortedFitness_arr.push([response, k]);
+            })
+        }
+        //     // ממיינים שוב את המערך עם הפיטנס שהיו עד כה + הפיטנסים החדשים של הילדים
+        sortedFitness_arr.sort()
+        // console.log(sortedFitness_arr)
+        //
+        //     //מכניסים את הפרטים שנרצה למחוק לתוך מערך שאותו נשלח לדליט אינדיבדואל
+        for (let i = sortedFitness_arr.length-1; i >= (sortedFitness_arr.length - NUM_DELETE); --i) {
+            delete_arr.push(sortedFitness_arr[i][1])
+        }
+        //     // משמיטים את הפרטים הפחות טובים גם מהמערך הכללי של הפיטנסים
+        for (let i = 0; i < NUM_DELETE; i++) {
+            sortedFitness_arr.pop()
+        }
+        //     // משמיטים את הפרטים הפחות טובים מהמונגו
+        //     console.log('delete the worse individual')
+        await deleteIndividual(delete_arr).then(response => {
+            console.log('delete Individual succ')
+        })
+        //
+        //     console.log('update id pop')
+        //     // עדכון של כל הI של הפופלישיין
+        await updatePopID(delete_arr).then(response => {
+            console.log('updatePopID succ')
+        })
+        //
+        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%', sortedFitness_arr[0])
+        if (sortedFitness_arr[0][0] < MINtemp[0]) {
+            MINtemp = sortedFitness_arr[0]
+    }
+    console.log('MINtemp', MINtemp)
+}
+// סוגריים של הפור של הדורות
     //return של הפיטנס הכי קטן-הכי טוב
-    console.log('=====================res====================',MINtemp)
-    // generalVariabl.findOneAndUpdate({flag:0},{flag:1})
-    // return MINtemp
+    console.log('===================== final res ====================',MINtemp)
+    await generalVariabl.findOneAndUpdate({name:"flag"},{flag:1}).then(response=>{console.log('succeeded update flag')})
 }
 
 
 
-async function crossover(parents_arr,newID){
-    let child_A=[]
-    let child_B=[]
-    let temp=[]
+
+
+
+
+
+
+
+async function crossover(parents_arr,newID) {
+    parents_arr.sort()
+    console.log('(((((((((((((((',parents_arr)
+    let child_A = []
+    let child_B = []
+    let temp = []
     let index
-    for(let i=0; i < parents_arr.length;i=i+2){
-        console.log('i',i)
-        let flag1=0
-        let flag2=0
-        await Individual.find().then(response=>{
-            child_A=[]
-            child_B=[]
-            temp=[]
-            response.forEach(function (u){
-                index=Math.trunc((u.array.length)/2)
-                if(u.popID==parents_arr[i]&& flag1==0){
+    for (let i = 0; i < parents_arr.length; i = i + 2) {
+        console.log('i', i)
+        let flag1 = 0
+        let flag2 = 0
+        await Individual.find().sort({popID:1}).then(response => {
+            response.forEach(function (u) {
+                console.log('u.popID',u.popID)
+                index = Math.trunc((u.array.length) / 2)
+                if (u.popID === parents_arr[i] && flag1 == 0) {
                     console.log('if 1')
-                    child_A.push(...(u.array.splice(0,index)))
+                    child_A.push(...(u.array.splice(0, index)))
                     temp.push(...(u.array.splice(-index)))
-                    flag1=1
+                    flag1 = 1
+                    console.log('temp',temp)
                 }
-                if(u.popID==parents_arr[i+1]&& flag2==0){
+                if (u.popID === parents_arr[i+1] && flag2 ==0) {
                     console.log('if 2')
                     child_A.push(...(u.array.splice(-index)))
-                    child_B.push(...(u.array.splice(0,index)))
-                    child_B=child_B.concat(...(temp))
-                    flag2=1
+                    child_B.push(...(u.array.splice(0, index)))
+                    child_B.push(...(temp))
+                    flag2 = 1
                 }
             })
-
             //save to mongo
-            let individual_1= new Individual({popID:newID+i,array:child_A})
-            let individual_2= new Individual({popID:newID+i+1,array:child_B})
+            let individual_1 = new Individual({popID: newID + i, array: child_A})
+            let individual_2 = new Individual({popID: newID + i + 1, array: child_B})
+            console.log("individual_1 ",individual_1)
+            console.log("individual_2 ",individual_2)
             individual_1.array.forEach(function(u) {
                 u[2]=[]
             })
-            console.log("individual_1",individual_1)
-            individual_1.save()
             individual_2.array.forEach(function(u) {
                 u[2]=[]
             })
-            individual_2.save()
-            // console.log('A',child_A)
-            // console.log('B',child_B)
 
+            // mutation
+            individual_1.save().then(res=>{
+                console.log("then save 2:");
+                individual_2.save();
+            })
+            console.log('A',child_A)
+            console.log('B',child_B)
+            child_A = []
+            child_B = []
+            temp = []
         })
 
 
     }
-
-
-
-// מוטציה על הילדים מהשלב הקודם
-
 }
 
-// crossover([1,2,3,4,5,6],11)
 
 
+
+// אם מוחקים יותק מ4 לשנות את האפדט ID
 async function updatePopID(delete_arr) {
     let childrenID_arr = [NUM_POP + 1, NUM_POP + 2, NUM_POP + 3, NUM_POP + 4]
     let sizeDelete = delete_arr.length
@@ -319,14 +338,20 @@ const add_hours =  function (dt, hours) {
     return new Date(dt.getTime() + hours*3600000);
 }
 
-// //
+// // //
 // reset_UserTime().then(response=>{console.log('reset_UserTime succ')})
 // resetAttractions().then(response=>{console.log('resetAttractions succ')})
 
-//
+
+
+
 Evolution().then(response=>{
     console.log('========end======')})
 
 // fitness(1).then(response=>{console.log('rrrrr')})
+
+
+
+
 
 
