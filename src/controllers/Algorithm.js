@@ -6,6 +6,8 @@ mongoose.connect('mongodb+srv://margalit:cy426316@teampark.lohoh.mongodb.net/Tea
 
 
 
+
+
 //requires
 const Individual= require('../models/individual')
 const generalVariable =require('../models/generalVariables');
@@ -20,6 +22,7 @@ const NUM_DELETE=4
 
 
 async function Evolution() {
+    let closeArr=[]
     let NowResult  // הערך הכי טוב באיטרציה הנוכחית
     let BestResult //הערך הכי טוב הכללי
     let iteration
@@ -40,14 +43,14 @@ async function Evolution() {
         //sortedFitness_arr.push([fit,i]) // דוחפים את הערך של כל פריט ואת את הID שלו שזה הi
         //let result = await promise;
     }
-    sortedFitness_arr.sort()// ממיינים את המערך של כל הפיטנסים
+    sortedFitness_arr.sort((a, b) => a[0] - b[0])//     ממיינים את המערך של כל הפיטנסים
     console.log("line 48: ", sortedFitness_arr)
     BestResult = sortedFitness_arr[0]
 
     // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
-    for(iteration=0 ; iteration<3 ;iteration++)
+    for(iteration=0 ; iteration< 10 ;iteration++)
     {
-             console.log('iteration :',iteration)
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ iteration :',iteration)
 
         //// selection
         //     // בוחרים את הפיטנסים הכי קטנים שיהיו ההורים לדור הבא
@@ -57,6 +60,7 @@ async function Evolution() {
         //// creat new  pop in mongo
         //     // שולחים את ההורים עם הid לקרוסבר שיצור ילדים חדשים במונגו החל מה id שנשלח
         console.log(i, "-------------------------------------------------------------------------")
+        parents_arr.sort((a, b) => a - b)
         await crossover(parents_arr, i).then(response => {
             console.log('succeeded crossover')
         })
@@ -71,7 +75,7 @@ async function Evolution() {
         }
 
         //     // ממיינים שוב את המערך עם הפיטנס שהיו עד כה + הפיטנסים החדשים של הילדים
-        sortedFitness_arr.sort()
+        sortedFitness_arr.sort((a, b) => a[0] - b[0])
         // console.log(sortedFitness_arr)
 
         //     //מכניסים את הפרטים שנרצה למחוק לתוך מערך שאותו נשלח לדליט אינדיבדואל
@@ -99,24 +103,31 @@ async function Evolution() {
                 sortedFitness_arr.push([u.fitness,u.popID])
             })
         })
-        sortedFitness_arr.sort()
+        sortedFitness_arr.sort((a, b) => a[0] - b[0])
         console.log('line 96:', sortedFitness_arr)
 
         //לוקחים מהמונגו את הפיטנס הכי קטן אחרי העדכון
-        await Individual.findOne().sort({fitness:1}).then(result=>
+        BestResult=await Individual.findOne().sort({fitness:1}).then(result=>
                 {console.log("sort",result)
-                NowResult = [result.fitness, result.popID]
+                NowResult = [result.fitness, result.popID];
+                    if (NowResult[0] < BestResult[0]) {
+                        BestResult = NowResult
+                    }
+
+                    console.log('BestResult', BestResult)
+                  return BestResult
+
             })
 
-        if (NowResult[0] < BestResult[0]) {
-            BestResult = NowResult
-        }
-        console.log('BestResult', BestResult)
+
         parents_arr = []
+        closeArr.push(BestResult)
+
     }// סוגריים של הפור של הדורות
 
     //return של הפיטנס הכי קטן-הכי טוב
-    console.log('===================== final res ====================',BestResult)
+    console.log('===================== final res ====================',BestResult,Date.now())
+    console.log("close ARR",closeArr)
     await generalVariable.findOneAndUpdate({name:"flag"},{flag:1}).then(response=>{console.log('succeeded update flag')})
 }
 
@@ -130,8 +141,7 @@ async function Evolution() {
 
 
 async function crossover(parents_arr,newID) {
-    parents_arr.sort()
-    console.log('parents_arr',parents_arr)
+    console.log('parents_arr sorttt ????',parents_arr)
     let child_A = []
     let child_B = []
     let temp = []
@@ -155,7 +165,7 @@ async function crossover(parents_arr,newID) {
                     console.log('##################if 2')
                     child_A.push(...(u.array.splice(-index)))
                     child_B.push(...(u.array.splice(0, index)))
-                    child_B = child_B.concat(...(temp))
+                    child_B.push(...(temp))
                     flag2 = 1
                 }
             })
@@ -164,13 +174,11 @@ async function crossover(parents_arr,newID) {
             const individual_2 = new Individual({popID: newID + i + 1, array: child_B})
             console.log("individual_1 ", individual_1)
             console.log("individual_2 ", individual_2)
-            individual_1.array.forEach(function (u) {
-                u[2] = []
-            })
-            individual_2.array.forEach(function (u) {
-                u[2] = []
-            })
 
+            for(let n=0; n < individual_1.array.length;n++){
+                individual_1.array[n][2]=[]
+                individual_2.array[n][2]=[]
+            }
             // mutation
             await individual_1.save().then(res => {
                 console.log("save 1");
@@ -195,7 +203,7 @@ async function crossover(parents_arr,newID) {
 async function updatePopID(delete_arr) {
     let childrenID_arr = [NUM_POP + 1, NUM_POP + 2, NUM_POP + 3, NUM_POP + 4]
     let sizeDelete = delete_arr.length
-    delete_arr.sort().reverse()
+    delete_arr.sort((a, b) => a - b).reverse()
     for (let i = 0; i < sizeDelete; ++i) {
         await Individual.findOneAndUpdate({popID: {$in: childrenID_arr}}, {popID: delete_arr[delete_arr.length - 1]}).sort({popID:1})
             .then(response => {
@@ -350,19 +358,17 @@ const add_hours =  function (dt, hours) {
     return new Date(dt.getTime() + hours*3600000);
 }
 
-// // /// resets:
+
+
+// // resets:
 // reset_UserTime().then(response=>{console.log('reset_UserTime succeed')})
 // resetAttractions().then(response=>{console.log('resetAttractions succeed')})
 
 
+//
+// setTimeout(Evolution,3000)
 
-
-Evolution().then(response=>{
-    console.log("=========finish time=========: ", Date.now())})
 // fitness(1).then(response=>{console.log('fitness')})
-
-
-
 
 
 
