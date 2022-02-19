@@ -10,6 +10,7 @@ const individualSchema = new Schema({
         unique: true
     },
     array:[],
+    LateArray:[],
     fitness:{
         type: Number,
         default: 0

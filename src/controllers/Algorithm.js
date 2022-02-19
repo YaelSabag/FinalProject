@@ -48,7 +48,7 @@ async function Evolution() {
     BestResult = sortedFitness_arr[0]
 
     // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
-    for(iteration=0 ; iteration< 10 ;iteration++)
+    for(iteration=0 ; iteration< 3 ;iteration++)
     {
         console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ iteration :',iteration)
 
@@ -108,16 +108,16 @@ async function Evolution() {
 
         //לוקחים מהמונגו את הפיטנס הכי קטן אחרי העדכון
         BestResult=await Individual.findOne().sort({fitness:1}).then(result=>
-                {console.log("sort",result)
-                NowResult = [result.fitness, result.popID];
-                    if (NowResult[0] < BestResult[0]) {
-                        BestResult = NowResult
-                    }
+        {console.log("sort",result)
+            NowResult = [result.fitness, result.popID];
+            if (NowResult[0] < BestResult[0]) {
+                BestResult = NowResult
+            }
 
-                    console.log('BestResult', BestResult)
-                  return BestResult
+            console.log('BestResult', BestResult)
+            return BestResult
 
-            })
+        })
 
 
         parents_arr = []
@@ -146,6 +146,9 @@ async function crossover(parents_arr,newID) {
     let child_B = []
     let temp = []
     let index
+    let tempTrans = []
+    let LateArray = []
+    let LateArray_temp = []
     for (let i = 0; i < parents_arr.length; i = i + 2) {
         console.log('i', i)
         let flag1 = 0
@@ -154,12 +157,14 @@ async function crossover(parents_arr,newID) {
             response.forEach(function (u) {
                 console.log('u.popID', u.popID)
                 index = Math.trunc((u.array.length) / 2)
+
                 if (u.popID == parents_arr[i] && flag1 == 0) {
                     console.log('##################if 1')
                     child_A.push(...(u.array.splice(0, index)))
                     temp.push(...(u.array.splice(-index)))
                     flag1 = 1
                     console.log('temp', temp)
+                    LateArray_temp.push(...(u.LateArray))
                 }
                 if (u.popID == parents_arr[i + 1] && flag2 == 0) {
                     console.log('##################if 2')
@@ -167,8 +172,58 @@ async function crossover(parents_arr,newID) {
                     child_B.push(...(u.array.splice(0, index)))
                     child_B.push(...(temp))
                     flag2 = 1
+                    LateArray_temp.push(...(u.LateArray))
                 }
             })
+            console.log("before mutation:++++++++++")
+            console.log('A', child_A)
+            console.log('B', child_B)
+            ///////mutation
+            LateArray = [...new Set(LateArray_temp)];
+            console.log("LateArray", LateArray)
+            let TransIndexA = index
+            let TransIndexB = index
+                for(let a = 0; a<index; a++)
+                {
+                    if(LateArray.includes(child_A[a][1]))
+                    {
+                        tempTrans = child_A[a]
+                        child_A[a] = child_A[TransIndexA]
+                        child_A[TransIndexA] = tempTrans
+                        //TransIndexA = TransIndexA-1
+                    }
+                    if(LateArray.includes(child_B[a][1]))
+                    {
+                        tempTrans = child_B[a]
+                        child_B[a] = child_B[TransIndexB]
+                        child_B[TransIndexB] = tempTrans
+                        //TransIndexB = TransIndexB-1
+                    }
+                }
+
+            TransIndexA = child_A.length-1
+            TransIndexB = child_A.length-1
+                for(let a = index; a<child_A.length-1; a++)
+                {
+                    if(LateArray.includes(child_A[a][1]))
+                    {
+                        tempTrans = child_A[a]
+                        child_A[a] = child_A[TransIndexA]
+                        child_A[TransIndexA] = tempTrans
+                        //TransIndexA = TransIndexA-1
+                    }
+                    if(LateArray.includes(child_B[a][1]))
+                    {
+                        tempTrans = child_B[a]
+                        child_B[a] = child_B[TransIndexB]
+                        child_B[TransIndexB] = tempTrans
+                        //TransIndexB = TransIndexB-1
+                    }
+
+                }
+            console.log("after mutation:----------------")
+            console.log('A', child_A)
+            console.log('B', child_B)
             //save to mongo
             const individual_1 = new Individual({popID: newID + i, array: child_A})
             const individual_2 = new Individual({popID: newID + i + 1, array: child_B})
@@ -179,14 +234,13 @@ async function crossover(parents_arr,newID) {
                 individual_1.array[n][2]=[]
                 individual_2.array[n][2]=[]
             }
-            // mutation
+
             await individual_1.save().then(res => {
                 console.log("save 1");
             })
             await individual_2.save().then(res=>{
                 console.log("save 2")})
-            console.log('A', child_A)
-            console.log('B', child_B)
+
             child_A = []
             child_B = []
             temp = []
@@ -271,7 +325,7 @@ async function fitness(popID) {
 //2
 async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
     console.log('send UserID: ',userID,'attID',attractionID)
-
+    let count_late = 0;
     let individualDoc = await Individual.findOne({popID:popID})
     let attractionDoc = await Attraction.findOne({attractionID: attractionID})
     let userDoc = await User.findOne({userID: userID})
@@ -314,10 +368,13 @@ async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
                 await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) // מוסיפים את החור שנוצר לזמן האחרון של המתקן
                 attractionDoc.time=add_minutes(attractionDoc.time, attractionDoc.Round)// מעדכנים גם את המשתנה שיוקדם בהתאם בשביל תנאי while
                 console.log('att time inc ' ,attractionDoc.time)
+                count_late++
             }
             await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {countNow: 1}})// מוסיפים את הבנאדם לסיבוב החדש
             await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
             await Individual.findOneAndUpdate({popID:popID},{$set:{array: individualDoc.array}})
+            if(count_late>=3)
+                await Individual.findOneAndUpdate({popID:popID},{$push:{LateArray:userID}})
         }
     }
 }
@@ -360,15 +417,15 @@ const add_hours =  function (dt, hours) {
 
 
 
-// // resets:
+// // // // resets:
 // reset_UserTime().then(response=>{console.log('reset_UserTime succeed')})
 // resetAttractions().then(response=>{console.log('resetAttractions succeed')})
 
 
 //
-// setTimeout(Evolution,3000)
+setTimeout(Evolution,3000)
 
 // fitness(1).then(response=>{console.log('fitness')})
 
 
-
+//console.log(b.push...(a))
