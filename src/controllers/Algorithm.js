@@ -13,6 +13,8 @@ const Individual= require('../models/individual')
 const generalVariable =require('../models/generalVariables');
 const Attraction =require('../models/attraction');
 const User = require('../models/users');
+const IndividualController = require('../controllers/individualController')
+const {shuffle} = require("./individualController");
 
 // const variable
 const NUM_POP=10
@@ -30,6 +32,7 @@ async function Evolution() {
     let parents_arr = []   // מערך של הפיטנסים הכי קטנים שמהם יוצרים ילדים
     let delete_arr = []    // מערך של הפיטנסים הכי גדולים שאותם מוחקים
     let i
+    let countClose = 0
     //let fit
     console.log('start')
     for (i = 1; i <= NUM_POP; ++i) {
@@ -48,7 +51,7 @@ async function Evolution() {
     BestResult = sortedFitness_arr[0]
 
     // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
-    for(iteration=0 ; iteration< 10 ;iteration++)
+    for(iteration=0 ; iteration< 5 ;iteration++)
     {
         console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ iteration :',iteration)
 
@@ -119,14 +122,19 @@ async function Evolution() {
 
         })
 
-
         parents_arr = []
         closeArr.push(BestResult)
-
+        if(closeArr.length>=2) {
+            if (closeArr[closeArr.length - 1][0] - closeArr[closeArr.length - 2][0] <= 1)
+                console.log("difference", closeArr[closeArr.length - 2][0] - closeArr[closeArr.length - 1][0])
+                countClose++
+        }
+        if(countClose>=2)
+            break
     }// סוגריים של הפור של הדורות
-
+    let dd = Date.now()
     //return של הפיטנס הכי קטן-הכי טוב
-    console.log('===================== final res ====================',BestResult,Date.now())
+    console.log('===================== final res ====================',BestResult,dd.toString())
     console.log("close ARR",closeArr)
     await generalVariable.findOneAndUpdate({name:"flag"},{flag:1}).then(response=>{console.log('succeeded update flag')})
 }
@@ -141,7 +149,8 @@ async function Evolution() {
 
 
 async function crossover(parents_arr,newID) {
-    console.log('parents_arr sorttt ????',parents_arr)
+    console.log("crossover")
+    // console.log('parents_arr sort ????',parents_arr)
     let child_A = []
     let child_B = []
     let temp = []
@@ -159,15 +168,15 @@ async function crossover(parents_arr,newID) {
                 index = Math.trunc((u.array.length) / 2)
 
                 if (u.popID == parents_arr[i] && flag1 == 0) {
-                    console.log('##################if 1')
+                    // console.log('##################if 1')
                     child_A.push(...(u.array.splice(0, index)))
                     temp.push(...(u.array.splice(-index)))
                     flag1 = 1
-                    console.log('temp', temp)
+                    // console.log('temp', temp)
                     LateArray_temp.push(...(u.LateArray))
                 }
                 if (u.popID == parents_arr[i + 1] && flag2 == 0) {
-                    console.log('##################if 2')
+                    // console.log('##################if 2')
                     child_A.push(...(u.array.splice(-index)))
                     child_B.push(...(u.array.splice(0, index)))
                     child_B.push(...(temp))
@@ -175,18 +184,27 @@ async function crossover(parents_arr,newID) {
                     LateArray_temp.push(...(u.LateArray))
                 }
             })
-            console.log("before mutation:++++++++++")
-            console.log('A', child_A)
-            console.log('B', child_B)
+            // console.log("before mutation:++++++++++")
+            // console.log('A', child_A)
+            // console.log('B', child_B)
             ///////mutation
             LateArray = [...new Set(LateArray_temp)];
             console.log("LateArray", LateArray)
+
+            // for(let a = 0; a<child_A.length-1; a++){
+            //     if(LateArray.includes(child_A[a][1]))
+            //         child_A[a][0] = shuffle(child_A[a][0])
+            //     if(LateArray.includes(child_B[a][1]))
+            //         child_B[a][0] = shuffle(child_B[a][0])
+            // }
+
             let TransIndexA = index-1
             let TransIndexB = index-1
                 for(let a = 0; a<index; a++)
                 {
                     if(LateArray.includes(child_A[a][1]))
                     {
+                        child_A[a][0] = shuffle(child_A[a][0])
                         tempTrans = child_A[a]
                         child_A[a] = child_A[TransIndexA]
                         child_A[TransIndexA] = tempTrans
@@ -194,6 +212,7 @@ async function crossover(parents_arr,newID) {
                     }
                     if(LateArray.includes(child_B[a][1]))
                     {
+                        child_B[a][0] = shuffle(child_B[a][0])
                         tempTrans = child_B[a]
                         child_B[a] = child_B[TransIndexB]
                         child_B[TransIndexB] = tempTrans
@@ -207,6 +226,7 @@ async function crossover(parents_arr,newID) {
                 {
                     if(LateArray.includes(child_A[a][1]))
                     {
+                        child_A[a][0] = shuffle(child_A[a][0])
                         tempTrans = child_A[a]
                         child_A[a] = child_A[TransIndexA]
                         child_A[TransIndexA] = tempTrans
@@ -214,6 +234,7 @@ async function crossover(parents_arr,newID) {
                     }
                     if(LateArray.includes(child_B[a][1]))
                     {
+                        child_B[a][0] = shuffle(child_B[a][0])
                         tempTrans = child_B[a]
                         child_B[a] = child_B[TransIndexB]
                         child_B[TransIndexB] = tempTrans
@@ -221,14 +242,14 @@ async function crossover(parents_arr,newID) {
                     }
 
                 }
-            console.log("after mutation:----------------")
-            console.log('A', child_A)
-            console.log('B', child_B)
+            // console.log("after mutation:----------------")
+            // console.log('A', child_A)
+            // console.log('B', child_B)
             //save to mongo
             const individual_1 = new Individual({popID: newID + i, array: child_A})
             const individual_2 = new Individual({popID: newID + i + 1, array: child_B})
-            console.log("individual_1 ", individual_1)
-            console.log("individual_2 ", individual_2)
+            // console.log("individual_1 ", individual_1)
+            // console.log("individual_2 ", individual_2)
 
             for(let n=0; n < individual_1.array.length;n++){
                 individual_1.array[n][2]=[]
@@ -276,6 +297,8 @@ async function fitness(popID) {
     console.log("line 207 popID:", popID)
     let individualDoc = await Individual.findOne({popID: popID})
     let max = 0
+    let avg
+    let avg_big
     console.log("line 178: ",individualDoc);
 
     for (let i=0;i<individualDoc.array.length;i++){
@@ -292,25 +315,31 @@ async function fitness(popID) {
             if(typeof (individualDoc.array[i][0][j])!='undefined') {
                 await Enter_To_Attraction1(individualDoc.array[i][1], individualDoc.array[i][0][j], popID, i)
                     .then(response => {
+                        avg_big = response
                         console.log('line 59: Enter_To_Attraction1 succeed')
                     })
             }
         }
     }
+    console.log("avg_big: ", avg_big)
     let sum = 0
     let d = new Date()
     d.setHours(8,0,0)
     console.log("d",d)
-    await User.find().then(
-        response =>{
-            response.forEach(function(u) {
-                sum= sum+(u.time-d)/60000
-            });
-        })
+    if(avg_big == 0) {
+        await User.find().then(
+            response => {
+                response.forEach(function (u) {
+                    sum = sum + (u.time - d) / 60000
+                });
+            })
 
-    console.log("sum", sum)
-    console.log("individualDoc.array.length", individualDoc.array.length)
-    let avg = sum/individualDoc.array.length
+        console.log("sum", sum)
+        console.log("individualDoc.array.length", individualDoc.array.length)
+        avg = sum / individualDoc.array.length
+    }
+    else
+        avg = 10000
     console.log('line 227: avg',avg)
     await Individual.findOneAndUpdate({popID: popID},{fitness:avg})
 
@@ -329,14 +358,22 @@ async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
     let individualDoc = await Individual.findOne({popID:popID})
     let attractionDoc = await Attraction.findOne({attractionID: attractionID})
     let userDoc = await User.findOne({userID: userID})
+    let numOfUsers = await User.count({})
 
-    individualDoc.array[i][2].push(add_minutes(userDoc.time, attractionDoc.Round))
-    console.log(individualDoc.array[i])
+    if(individualDoc.LateArray.length>=numOfUsers/2) {
+        console.log("very much later")
+        return 1
+    }
+
+    // individualDoc.array[i][2].push(add_minutes(userDoc.time, attractionDoc.Round))
+    // console.log(individualDoc.array[i])
 
     if (attractionDoc.countNow == 0 && userDoc.time <= attractionDoc.time) {   //של המתקן שווה ל0 זא שהסיבוב  ריק count
         console.log('if 1')
         await Attraction.findOneAndUpdate({attractionID: attractionID}, {$inc: {countNow: 1}})// מכניסים בנאדם ומקדמים את הקוואנט
         await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(userDoc.time, attractionDoc.Round)}})  //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
+        userDoc.time = add_minutes(userDoc.time, attractionDoc.Round)
+        individualDoc.array[i][2].push(userDoc.time)
         await Individual.findOneAndUpdate({popID:popID},{$set:{array: individualDoc.array}})
     }
 
@@ -347,6 +384,8 @@ async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
             console.log('if 2')
             await Attraction.findOneAndUpdate({attractionID: attractionID}, {$inc: {countNow: 1}}) // מקדמת את הקוואנט של התור -הסיבוב הנוכחי
             await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}})// מעדכנת את השעה של היוזר
+            userDoc.time = add_minutes(userDoc.time, attractionDoc.Round)
+            individualDoc.array[i][2].push(userDoc.time)
             await Individual.findOneAndUpdate({popID:popID},{$set:{array: individualDoc.array}})
         }
 
@@ -357,6 +396,8 @@ async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
             attractionDoc.time=add_minutes(attractionDoc.time, attractionDoc.Round)
             await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {countNow: 1}})// מוסיפים את הבנאדם לסיבוב החדש
             await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) //מעדכנים הטיים של היוזר לטיים האחרון של המתקן
+            userDoc.time = add_minutes(userDoc.time, attractionDoc.Round)
+            individualDoc.array[i][2].push(userDoc.time)
             await Individual.findOneAndUpdate({popID:popID},{$set:{array: individualDoc.array}})
         }
 
@@ -372,11 +413,14 @@ async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
             }
             await Attraction.findOneAndUpdate({attractionID: attractionID}, {$set: {countNow: 1}})// מוסיפים את הבנאדם לסיבוב החדש
             await User.findOneAndUpdate({userID: userID}, {$set: {time: add_minutes(attractionDoc.time, attractionDoc.Round)}}) //לגשת לשדה טיים של היוזר ולהוסיף את הזמן של המתקן
+            userDoc.time = add_minutes(userDoc.time, attractionDoc.Round)
+            individualDoc.array[i][2].push(userDoc.time)
             await Individual.findOneAndUpdate({popID:popID},{$set:{array: individualDoc.array}})
             if(count_late>=3)
                 await Individual.findOneAndUpdate({popID:popID},{$push:{LateArray:userID}})
         }
     }
+    return 0
 }
 
 //reset database
