@@ -48,7 +48,7 @@ async function Evolution() {
     BestResult = sortedFitness_arr[0]
 
     // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
-    for(iteration=0 ; iteration< 3 ;iteration++)
+    for(iteration=0 ; iteration< 10 ;iteration++)
     {
         console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ iteration :',iteration)
 
@@ -181,8 +181,8 @@ async function crossover(parents_arr,newID) {
             ///////mutation
             LateArray = [...new Set(LateArray_temp)];
             console.log("LateArray", LateArray)
-            let TransIndexA = index
-            let TransIndexB = index
+            let TransIndexA = index-1
+            let TransIndexB = index-1
                 for(let a = 0; a<index; a++)
                 {
                     if(LateArray.includes(child_A[a][1]))
@@ -417,7 +417,7 @@ const add_hours =  function (dt, hours) {
 
 
 
-// // // // resets:
+// // // // // resets:
 // reset_UserTime().then(response=>{console.log('reset_UserTime succeed')})
 // resetAttractions().then(response=>{console.log('resetAttractions succeed')})
 
