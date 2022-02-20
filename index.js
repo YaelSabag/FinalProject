@@ -4,14 +4,16 @@ const app = express()
 const http = require('http')
 const Attraction =require('./src/models/attraction');
 const Individual =require('./src/controllers/individualController');
+//env
+const dotenv=require('dotenv')
+//dotenv.config()
+
 
 const isProd = process.env.APP_ENV === 'prod'
 if(!isProd)
     dotenv.config({path:'.env'})
 
-//env
-const dotenv=require('dotenv')
-dotenv.config()
+
 
 
 //connect to mongoDB:
