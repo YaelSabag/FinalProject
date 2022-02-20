@@ -1,11 +1,13 @@
 const express = require('express')
 const app = express()
-const PORT = process.env.PORT || 3000
+//const PORT = process.env.PORT || 3000
 const http = require('http')
 const Attraction =require('./src/models/attraction');
 const Individual =require('./src/controllers/individualController');
 
-
+const isProd = process.env.APP_ENV === 'prod'
+if(!isProd)
+    dotenv.config({path:'.env'})
 
 //env
 const dotenv=require('dotenv')
@@ -15,9 +17,22 @@ dotenv.config()
 //connect to mongoDB:
 const  dbURI = 'mongodb+srv://margalit:cy426316@teampark.lohoh.mongodb.net/TeamPark?retryWrites=true&w=majority'
 const mongoose = require ('mongoose')
-mongoose.connect(process.env.dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
-    .then((result) => {console.log('connected')})
-    .catch ((err)=>console.log(err))
+const connectionParams = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}
+
+mongoose.connect(dbURI, connectionParams)
+    .then(() => {
+        console.log('connected');
+
+    }).catch((err) => {
+    console.log(`error connecting ${err}`);
+})
+
+// mongoose.connect(process.env.dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
+//     .then((result) => {console.log('connected')})
+//     .catch ((err)=>console.log(err))
 
 //body parser:
 const bodyParser =require('body-parser')
@@ -130,9 +145,12 @@ app.get('/', (req, res) => {
     res.send('hello world')
 })
 
+const port =  process.env.PORT || 4000
+app.listen(port, () => {
+    console.log(`\nserver is up and running at: http://127.0.0.1:${port}\n` )
+})
 
-
-app.listen(PORT, hostname, ()=> console.log(`server running at: http://${hostname}:${PORT}`))
+//app.listen(PORT, hostname, ()=> console.log(`server running at: http://${hostname}:${PORT}`))
 
 
 // var Flag=0

@@ -2,6 +2,7 @@ const User=require('../models/users')
 const mongoose = require ('mongoose')
 const {bcrypt} = require("buffer");
 const general = require('../models/generalVariables')
+const Individual = require('../models/individual')
 
 
 //show the list of Users
@@ -141,6 +142,7 @@ const getRoute=(req, res)=>{
     let id = req.query.id
     let check
     let x = 0
+    let schedule = []
     general.findOne({name:'flag'})
         .then(r=>{console.log(r)
             if(r.flag == 0) {
@@ -149,11 +151,12 @@ const getRoute=(req, res)=>{
             }
             else {
                 console.log("else", r.flag)
-                User.findOne({userID: id})
-                    .then(response => {
-                        console.log(response)
-                        res.send(response)
-                    })
+                Individual.findOne({})
+                // User.findOne({userID: id})
+                //     .then(response => {
+                //         console.log(response)
+                //         res.send(response)
+                //     })
             }
         })
         .catch(error=>{res.send("error getRoute")})

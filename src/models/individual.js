@@ -14,6 +14,10 @@ const individualSchema = new Schema({
     fitness:{
         type: Number,
         default: 0
+    },
+    selected:{
+        type: Boolean,
+        default: false
     }
     //array: User.age
     //matrix:User.selected_attractions
