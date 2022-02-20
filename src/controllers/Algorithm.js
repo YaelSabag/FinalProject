@@ -51,7 +51,7 @@ async function Evolution() {
     BestResult = sortedFitness_arr[0]
 
     // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
-    for(iteration=0 ; iteration< 5 ;iteration++)
+    for(iteration=0 ; iteration< 10 ;iteration++)
     {
         console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ iteration :',iteration)
 
@@ -360,7 +360,7 @@ async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
     let userDoc = await User.findOne({userID: userID})
     let numOfUsers = await User.count({})
 
-    if(individualDoc.LateArray.length>=numOfUsers/2) {
+    if(individualDoc.LateArray.length>=numOfUsers*0.75) {
         console.log("very much later")
         return 1
     }
@@ -416,7 +416,7 @@ async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
             userDoc.time = add_minutes(userDoc.time, attractionDoc.Round)
             individualDoc.array[i][2].push(userDoc.time)
             await Individual.findOneAndUpdate({popID:popID},{$set:{array: individualDoc.array}})
-            if(count_late>=3)
+            if(count_late>=5)
                 await Individual.findOneAndUpdate({popID:popID},{$push:{LateArray:userID}})
         }
     }
