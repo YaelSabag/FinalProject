@@ -4,7 +4,7 @@ const app = express()
 const http = require('http')
 const Attraction =require('./src/models/attraction');
 const Individual =require('./src/controllers/individualController');
-const port =  process.env.PORT || 3000
+const PORT =  process.env.PORT || 3000
 
 //env
 const dotenv=require('dotenv')
@@ -58,8 +58,8 @@ const server = http.createServer((req, res) => {
 });
 
 
-app.listen(port, () => {
-    console.log(`\nserver is up and running at: http://127.0.0.1:${port}\n` )
+app.listen(PORT, () => {
+    console.log(`\nserver is up and running at: http://127.0.0.1:${PORT}\n` )
 })
 
 //routes
