@@ -146,7 +146,7 @@ app.use('/individual',require('./routes/individualAPI'))
 
 app.get('/', (req, res) => {
     console.log('test')
-    res.send('hello world')
+    res.render('homePage');
 })
 
 
