@@ -41,8 +41,8 @@ const bodyParser =require('body-parser')
 app.use(bodyParser.json())
 
 //app.engine('html', require('ejs').renderFile);
-app.use(express.static("src/views/"));
-app.set('views engine', 'ejs')
+app.use(express.static("src/view/"));
+app.set('view engine', 'ejs')
 
 // http status codes
 const statusOK = 200;
