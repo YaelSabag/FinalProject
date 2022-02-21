@@ -132,11 +132,12 @@ async function Evolution() {
         if(countClose>=2)
             break
     }// סוגריים של הפור של הדורות
-    let dd = Date.now()
+    //let dd = Date.now()
     //return של הפיטנס הכי קטן-הכי טוב
-    console.log('===================== final res ====================',BestResult,dd.toString())
+    console.log('===================== final res ====================',BestResult)
     console.log("close ARR",closeArr)
     await generalVariable.findOneAndUpdate({name:"flag"},{flag:1}).then(response=>{console.log('succeeded update flag')})
+    await Individual.findOneAndUpdate({popID: BestResult[1]}, {selected: true}).then(response=>console.log("selected update", response.selected))
 }
 
 
@@ -319,7 +320,11 @@ async function fitness(popID) {
                         console.log('line 59: Enter_To_Attraction1 succeed')
                     })
             }
+            if(avg_big == 1)
+                break
         }
+        if(avg_big == 1)
+            break
     }
     console.log("avg_big: ", avg_big)
     let sum = 0
@@ -356,7 +361,6 @@ async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
     console.log('send UserID: ',userID,'attID',attractionID)
     let count_late = 0;
     let individualDoc = await Individual.findOne({popID:popID})
-    let attractionDoc = await Attraction.findOne({attractionID: attractionID})
     let userDoc = await User.findOne({userID: userID})
     let numOfUsers = await User.count({})
 
@@ -365,6 +369,7 @@ async function Enter_To_Attraction1(userID,attractionID,popID,i,j) {
         return 1
     }
 
+    let attractionDoc = await Attraction.findOne({attractionID: attractionID})
     // individualDoc.array[i][2].push(add_minutes(userDoc.time, attractionDoc.Round))
     // console.log(individualDoc.array[i])
 

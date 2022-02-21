@@ -3,6 +3,7 @@ const mongoose = require ('mongoose')
 const {bcrypt} = require("buffer");
 const general = require('../models/generalVariables')
 const Individual = require('../models/individual')
+const Attraction = require('../models/attraction')
 
 
 //show the list of Users
@@ -33,11 +34,11 @@ const login= (req, res) => {
             console.log('Invalid password')
         }
     })
-    .catch(error => {
-        res.send('Invalid username')
-        console.log('Invalid username')
+        .catch(error => {
+            res.send('Invalid username')
+            console.log('Invalid username')
 
-    })
+        })
 }
 
 
@@ -81,7 +82,7 @@ const addUser= (req,res,next)=>{
             res.send('User added successfully')
         })
         .catch(error => {
-                res.send( 'An error POST Occurred!')
+            res.send( 'An error POST Occurred!')
         })
 }
 
@@ -90,14 +91,14 @@ const updateUser= (req,res,next)=>{
     console.log("updateUser")
     console.log(req.query)
     const userID=req.query.userID
-        const updateData= {
-            //userID:req.query.userID,
-            fullName:req.query.fullName,
-            //email:req.query.email,
-            password:req.query.password,
-            age:req.query.age,
-            height:req.query.height
-        }
+    const updateData= {
+        //userID:req.query.userID,
+        fullName:req.query.fullName,
+        //email:req.query.email,
+        password:req.query.password,
+        age:req.query.age,
+        height:req.query.height
+    }
     User.findOneAndUpdate({userID},{$set:updateData})
         .then(response=>{
             res.send('User Updated successfully')
@@ -137,13 +138,20 @@ const deleteUser= (req,res,next)=>{
             })
         })
 }
-
+const remove_minutes =  function (dt, minutes) {
+    return new Date(dt.getTime() - minutes*60000);
+}
 const getRoute=(req, res)=>{
     console.log("getRoute")
     let id = req.query.id
-    let check
-    let x = 0
     let schedule = []
+    let attractionsRound = []
+
+    Attraction.find().sort({attractionID:1}).then(answer=>{
+        answer.forEach(function (u){
+            attractionsRound.push(u.Round)
+        })
+    })
     general.findOne({name:'flag'})
         .then(r=>{console.log(r)
             if(r.flag == 0) {
@@ -151,19 +159,38 @@ const getRoute=(req, res)=>{
                 res.send(r)
             }
             else {
-                console.log("else", r.flag)
-                Individual.findOne({})
-                // User.findOne({userID: id})
-                //     .then(response => {
-                //         console.log(response)
-                //         res.send(response)
-                //     })
+                //console.log("else", r.flag)
+                Individual.findOne({selected: true}).then(result=>{
+                    //console.log(result)
+                    result.array.forEach(function (u) {
+                        if (u[1] == id) {
+                            schedule.push(u[0])
+                            schedule.push(u[2])
+                        }
+                    })
+
+                    for(let i = 0; i<schedule[1].length; i++)
+                    {
+                        console.log(schedule[1][i])
+                        let d = remove_minutes(schedule[1][i], attractionsRound[parseInt(schedule[0][i])-1])
+                        schedule[1][i] = d.toLocaleTimeString().replace(/(.*)\D\d+/, '$1');
+
+                        console.log(schedule[1][i])
+                    }
+                    console.log("attractionsRound", attractionsRound)
+                    console.log("schedule",schedule)
+                    res.json({"attractions":schedule[0],
+                        "times":schedule[1]})
+                })
             }
         })
         .catch(error=>{res.send("error getRoute")})
+
 }
 
 
+// console.log(new Date(d.getFullYear(),d.getMonth(),d.getDate()))
+// console.log(remove_minutes(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 5))
 
 
 

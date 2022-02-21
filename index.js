@@ -151,7 +151,7 @@ app.get('/', (req, res) => {
 
 
 
-const port =  process.env.PORT || 4000
+const port =  process.env.PORT || 3000
 app.listen(port, () => {
     console.log(`\nserver is up and running at: http://127.0.0.1:${port}\n` )
 })

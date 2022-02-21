@@ -45,6 +45,7 @@ const addIndividual= (req,res,next)=>{
 //creat the initial array
 const creatInitialIndividual= (req,res)=> {
     const mainArrayGV =new generalVariabl()
+
     schedule = new Array()
     userSchema.find()
         //.select('selected_attractions')
@@ -52,6 +53,7 @@ const creatInitialIndividual= (req,res)=> {
             response.forEach(function(u) {
                 mainArrayGV.MainArray.push([u.selected_attractions,u.userID,schedule])
             });
+            mainArrayGV.name = "population"
             mainArrayGV.save().then(response=>{
                console.log(response)
             })
