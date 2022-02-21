@@ -2,8 +2,8 @@ const express = require('express')
 const app = express()
 //const PORT = process.env.PORT || 3000
 const http = require('http')
-const Attraction =require('./models/attraction');
-const Individual =require('./controllers/individualController');
+const Attraction =require('./src/models/attraction');
+const Individual =require('./src/controllers/individualController');
 const port =  process.env.PORT || 3000
 
 //env
@@ -62,13 +62,12 @@ app.listen(port, () => {
 })
 
 //routes
-app.use('/users', require('../routes/usersAPI'))
-app.use('/attraction', require('../routes/attractionAPI'))
-app.use('/individual',require('../routes/individualAPI'))
+app.use('/users', require('./routes/usersAPI'))
+app.use('/attraction', require('./routes/attractionAPI'))
+app.use('/individual',require('./routes/individualAPI'))
 
 app.get('/', (req,res) => {
-    res.json({name:"rrr"})
-    //res.render('homePage');
+    res.send('hellooooooooo');
 });
 
 
