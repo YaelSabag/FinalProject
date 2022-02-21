@@ -57,9 +57,12 @@ const server = http.createServer((req, res) => {
     res.end('Hello World\n');
 });
 
-app.listen(port, () => {
-    console.log(`\nserver is up and running at: http://127.0.0.1:${port}\n` )
-})
+app.listen(process.env.PORT || 3000, function(){
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+});
+// app.listen(port, () => {
+//     console.log(`\nserver is up and running at: http://127.0.0.1:${port}\n` )
+// })
 
 //routes
 app.use('/users', require('./routes/usersAPI'))
