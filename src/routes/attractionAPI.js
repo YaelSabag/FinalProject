@@ -1,5 +1,5 @@
 const router=require('express').Router()
-const attractionControler = require('../src/controllers/attractionControler')
+const attractionControler = require('../controllers/attractionControler')
 
 router.get('/getAttraction', attractionControler.getAttraction)
 router.post('/addAttraction', attractionControler.addAttraction)

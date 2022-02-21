@@ -7,8 +7,8 @@ const Individual =require('./src/controllers/individualController');
 const PORT =  process.env.PORT || 3000
 
 //env
-const dotenv=require('dotenv')
-//dotenv.config()
+const dotenv = require('dotenv')
+dotenv.config()
 const isProd = process.env.APP_ENV === 'prod'
 if(!isProd)
     dotenv.config({path:'.env'})
@@ -63,9 +63,9 @@ app.listen(PORT, () => {
 })
 
 //routes
-app.use('/users', require('./routes/usersAPI'))
-app.use('/attraction', require('./routes/attractionAPI'))
-app.use('/individual',require('./routes/individualAPI'))
+app.use('/users', require('./src/routes/usersAPI'))
+app.use('/attraction', require('./src/routes/attractionAPI'))
+app.use('/individual',require('./src/routes/individualAPI'))
 
 app.get('/', (req,res) => {
     res.send('hellooooooooo');

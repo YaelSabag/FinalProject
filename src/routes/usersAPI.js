@@ -1,6 +1,6 @@
 const router=require('express').Router()
 
-const userController = require('../src/controllers/userControler')
+const userController = require('../controllers/userControler')
 router.get('/getUsers', userController.getUsers)
 router.post('/getUserByID', userController.getUserByID)
 router.post('/addUser', userController.addUser )
