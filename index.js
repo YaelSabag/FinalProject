@@ -68,7 +68,7 @@ app.use('/attraction', require('./src/routes/attractionAPI'))
 app.use('/individual',require('./src/routes/individualAPI'))
 
 app.get('/', (req,res) => {
-    res.send('hellooooooooo');
+    res.send('ovedddd');
 });
 
 
