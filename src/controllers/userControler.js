@@ -65,19 +65,19 @@ const addUser= (req,res,next)=>{
     console.log("params", req.params)
     console.log("query", req.query)
     const user=new User({
-        userID:req.query.userID,
-        fullName:req.query.fullName,
-        email:req.query.email,
-        password:req.query.password,
-        age:req.query.age,
-        height:req.query.height
-        // userID:222,
-        // fullName:"gal",
-        // email:"gal@gmail.com",
-        // password:"123456",
-        // age:22,
-        // height:1.78,
-        // selected_attractions:[5,4,2,3]
+        // userID:req.query.userID,
+        // fullName:req.query.fullName,
+        // email:req.query.email,
+        // password:req.query.password,
+        // age:req.query.age,
+        // height:req.query.height
+        userID:33332222,
+        fullName:"david",
+        email:"david@gmail.com",
+        password:"123456",
+        age:22,
+        height:1.78,
+        selected_attractions:[8,1,4,2,6]
     })
     user.save()
         .then(response=>{
@@ -185,12 +185,7 @@ const getRoute=async (req, res) => {
                     for (let i = 0; i < schedule[1].length; i++) {
                         console.log(schedule[1][i])
                         let d = remove_minutes(schedule[1][i], attractionsRound[parseInt(schedule[0][i]) - 1])
-                        //d = add_hours(d, 2)
-                        //console.log(d.toLocaleTimeString('en-GB'));
-
                         let temp = d.toLocaleTimeString('he-IL',{timeZone:'Asia/Jerusalem'}).replace(/(.*)\D\d+/, '$1').toString();
-
-                        //let day = d.format('{hh}:{mm}')
                         schedule[1][i] = temp
                         console.log(schedule[1][i])
                     }
