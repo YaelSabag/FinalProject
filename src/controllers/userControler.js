@@ -188,14 +188,11 @@ const getRoute=async (req, res) => {
                         //d = add_hours(d, 2)
                         //console.log(d.toLocaleTimeString('en-GB'));
 
-                        let temp = d.toLocaleTimeString('he-IL').replace(/(.*)\D\d+/, '$1').toString();
+                        let temp = d.toLocaleTimeString('he-IL',{timeZone:'Asia/Jerusalem'}).replace(/(.*)\D\d+/, '$1').toString();
 
                         //let day = d.format('{hh}:{mm}')
-
                         schedule[1][i] = temp
                         console.log(schedule[1][i])
-
-
                     }
                     console.log("attractionsRound", attractionsRound)
                     console.log("schedule", schedule)
