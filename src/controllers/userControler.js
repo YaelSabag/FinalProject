@@ -144,11 +144,13 @@ const remove_minutes =  function (dt, minutes) {
     return new Date(dt.getTime() - minutes*60000);
 }
 const getRoute=async (req, res) => {
-    console.log("getRoute")
-    let id = req.query.id
+    console.log("getRoute", req.body)
+    console.log("req.body",req.body)
+    console.log("req.params", req.params)
+    let id = req.query.userID
     let schedule = []
     let attractionsRound = []
-
+    console.log("id",id)
     Attraction.find().sort({attractionID: 1}).then(answer => {
         answer.forEach(function (u) {
             attractionsRound.push(u.Round)
@@ -163,6 +165,7 @@ const getRoute=async (req, res) => {
             } else {
                 //console.log("else", r.flag)
                 Individual.findOne({selected: true}).then(result => {
+                    console.log("result", result)
                     //console.log(result)
                     result.array.forEach(function (u) {
                         if (u[1] == id) {
@@ -170,7 +173,8 @@ const getRoute=async (req, res) => {
                             schedule.push(u[2])
                         }
                     })
-
+                    console.log("schedule",schedule)
+                    console.log("schedule[1]",schedule[1])
                     for (let i = 0; i < schedule[1].length; i++) {
                         console.log(schedule[1][i])
                         let d = remove_minutes(schedule[1][i], attractionsRound[parseInt(schedule[0][i]) - 1])
