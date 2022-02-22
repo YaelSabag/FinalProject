@@ -111,6 +111,7 @@ const updateUser= (req,res,next)=>{
 
 
 const selected_attraction_update = (req,res,next)=>{
+
     console.log("selected_attraction_update")
     const userID=req.query.userID
     const selected_attractions_update = req.query.selected_attractions
