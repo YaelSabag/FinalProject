@@ -79,7 +79,7 @@ const addUser= (req,res,next)=>{
     })
     user.save()
         .then(response=>{
-            res.send('User added successfully')
+            res.send(response)
         })
         .catch(error => {
             res.send( 'An error POST Occurred!')
