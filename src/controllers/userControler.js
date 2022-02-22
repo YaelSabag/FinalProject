@@ -51,7 +51,7 @@ const getUserByID= (req,res,next)=>{
     User.findOne({userID:userID})
         .then(response=>{
             res.send(response)
-            console.log('the user:',response)
+
         })
         .catch(error => {
             res.send('user not found')
@@ -64,19 +64,19 @@ const addUser= (req,res,next)=>{
     console.log("params", req.params)
     console.log("query", req.query)
     const user=new User({
-        // userID:req.query.userID,
-        // fullName:req.query.fullName,
-        // email:req.query.email,
-        // password:req.query.password,
-        // age:req.query.age,
-        // height:req.query.height
-        userID:222,
-        fullName:"gal",
-        email:"gal@gmail.com",
-        password:"123456",
-        age:22,
-        height:1.78,
-        selected_attractions:[5,4,2,3]
+        userID:req.query.userID,
+        fullName:req.query.fullName,
+        email:req.query.email,
+        password:req.query.password,
+        age:req.query.age,
+        height:req.query.height
+        // userID:222,
+        // fullName:"gal",
+        // email:"gal@gmail.com",
+        // password:"123456",
+        // age:22,
+        // height:1.78,
+        // selected_attractions:[5,4,2,3]
     })
     user.save()
         .then(response=>{
@@ -111,6 +111,7 @@ const updateUser= (req,res,next)=>{
 
 
 const selected_attraction_update = (req,res,next)=>{
+
     console.log("selected_attraction_update")
     const userID=req.query.userID
     const selected_attractions_update = req.query.selected_attractions
