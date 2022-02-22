@@ -14,6 +14,7 @@ const generalVariable =require('../models/generalVariables');
 const Attraction =require('../models/attraction');
 const User = require('../models/users');
 const IndividualController = require('../controllers/individualController')
+const {render} = require("ejs");
 const {shuffle} = require("./individualController");
 
 // const variable
@@ -138,6 +139,7 @@ async function Evolution() {
     console.log("close ARR",closeArr)
     await generalVariable.findOneAndUpdate({name:"flag"},{flag:1}).then(response=>{console.log('succeeded update flag')})
     await Individual.findOneAndUpdate({popID: BestResult[1]}, {selected: true}).then(response=>console.log("selected update", response.selected))
+    render('homePage')
 }
 
 

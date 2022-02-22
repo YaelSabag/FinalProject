@@ -60,6 +60,7 @@ const creatInitialIndividual= (req,res)=> {
             })
             console.log('main array', mainArray)
             console.log('mainArrayGV', mainArrayGV)
+            res.render('homePage')
         })
         .catch(error => {
             res.send("error in Individual Controller")
@@ -143,6 +144,7 @@ const makePopulation = (req,res)=>
     {
         Randomization(req,res,i)
     }
+    res.render('homePage')
 }
 
 const DateToString= ()=> {

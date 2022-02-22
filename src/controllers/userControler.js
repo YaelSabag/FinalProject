@@ -143,26 +143,26 @@ const deleteUser= (req,res,next)=>{
 const remove_minutes =  function (dt, minutes) {
     return new Date(dt.getTime() - minutes*60000);
 }
-const getRoute=(req, res)=>{
+const getRoute=async (req, res) => {
     console.log("getRoute")
     let id = req.query.id
     let schedule = []
     let attractionsRound = []
 
-    Attraction.find().sort({attractionID:1}).then(answer=>{
-        answer.forEach(function (u){
+    await Attraction.find().sort({attractionID: 1}).then(answer => {
+        answer.forEach(function (u) {
             attractionsRound.push(u.Round)
         })
     })
-    general.findOne({name:'flag'})
-        .then(r=>{console.log(r)
-            if(r.flag == 0) {
+    await general.findOne({name: 'flag'})
+        .then(async r => {
+            console.log(r)
+            if (r.flag == 0) {
                 console.log("flag", r.flag)
                 res.send(r)
-            }
-            else {
+            } else {
                 //console.log("else", r.flag)
-                Individual.findOne({selected: true}).then(result=>{
+                await Individual.findOne({selected: true}).then(result => {
                     //console.log(result)
                     result.array.forEach(function (u) {
                         if (u[1] == id) {
@@ -171,22 +171,25 @@ const getRoute=(req, res)=>{
                         }
                     })
 
-                    for(let i = 0; i<schedule[1].length; i++)
-                    {
+                    for (let i = 0; i < schedule[1].length; i++) {
                         console.log(schedule[1][i])
-                        let d = remove_minutes(schedule[1][i], attractionsRound[parseInt(schedule[0][i])-1])
+                        let d = remove_minutes(schedule[1][i], attractionsRound[parseInt(schedule[0][i]) - 1])
                         schedule[1][i] = d.toLocaleTimeString().replace(/(.*)\D\d+/, '$1');
 
                         console.log(schedule[1][i])
                     }
                     console.log("attractionsRound", attractionsRound)
-                    console.log("schedule",schedule)
-                    res.json({"attractions":schedule[0],
-                        "times":schedule[1]})
+                    console.log("schedule", schedule)
+                    res.json({
+                        "attractions": schedule[0],
+                        "times": schedule[1]
+                    })
                 })
             }
         })
-        .catch(error=>{res.send("error getRoute")})
+        .catch(error => {
+            res.send("error getRoute")
+        })
 
 
 }
