@@ -149,12 +149,12 @@ const getRoute=async (req, res) => {
     let schedule = []
     let attractionsRound = []
 
-    await Attraction.find().sort({attractionID: 1}).then(answer => {
+    Attraction.find().sort({attractionID: 1}).then(answer => {
         answer.forEach(function (u) {
             attractionsRound.push(u.Round)
         })
     })
-    await general.findOne({name: 'flag'})
+    general.findOne({name: 'flag'})
         .then(async r => {
             console.log(r)
             if (r.flag == 0) {
