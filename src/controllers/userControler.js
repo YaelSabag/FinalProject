@@ -155,14 +155,14 @@ const getRoute=async (req, res) => {
         })
     })
     general.findOne({name: 'flag'})
-        .then(async r => {
+        .then( r => {
             console.log(r)
             if (r.flag == 0) {
                 console.log("flag", r.flag)
                 res.send(r)
             } else {
                 //console.log("else", r.flag)
-                await Individual.findOne({selected: true}).then(result => {
+                Individual.findOne({selected: true}).then(result => {
                     //console.log(result)
                     result.array.forEach(function (u) {
                         if (u[1] == id) {
