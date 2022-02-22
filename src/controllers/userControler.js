@@ -28,6 +28,7 @@ const login= (req, res) => {
     User.findOne({ email }).then(response => {
         if (password == response.password) {
             res.send(response)
+
         }
         else {
             res.send('Invalid password')
@@ -63,23 +64,23 @@ const addUser= (req,res,next)=>{
     console.log("params", req.params)
     console.log("query", req.query)
     const user=new User({
-        userID:req.query.userID,
-        fullName:req.query.fullName,
-        email:req.query.email,
-        password:req.query.password,
-        age:req.query.age,
-        height:req.query.height
-        // userID:6,
-        // fullName:"or",
-        // email:"o@gmail.com",
-        // password:"123456",
-        // age:22,
-        // height:1.78,
-        // selected_attractions:[5,4,2,3]
+        // userID:req.query.userID,
+        // fullName:req.query.fullName,
+        // email:req.query.email,
+        // password:req.query.password,
+        // age:req.query.age,
+        // height:req.query.height
+        userID:222,
+        fullName:"gal",
+        email:"gal@gmail.com",
+        password:"123456",
+        age:22,
+        height:1.78,
+        selected_attractions:[5,4,2,3]
     })
     user.save()
         .then(response=>{
-            res.send('User added successfully')
+            res.send(response)
         })
         .catch(error => {
             res.send( 'An error POST Occurred!')
