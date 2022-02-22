@@ -18,7 +18,7 @@ const userSchema = new Schema({
     },
     fullName:{
         type:String,
-        maxLength:15
+        maxLength:20
     },
     email:{
        type: String,
@@ -27,7 +27,6 @@ const userSchema = new Schema({
     },
     password:{
         type: String,
-        minLength: 6,
         required: true
     },
     // telephone:{
