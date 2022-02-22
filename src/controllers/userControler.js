@@ -179,7 +179,7 @@ const getRoute=async (req, res) => {
                         console.log(schedule[1][i])
                         let d = remove_minutes(schedule[1][i], attractionsRound[parseInt(schedule[0][i]) - 1])
                         schedule[1][i] = d.toLocaleTimeString().replace(/(.*)\D\d+/, '$1').toString();
-
+                        schedule[1][i] = String(schedule[1][i])
                         console.log(schedule[1][i])
                     }
                     console.log("attractionsRound", attractionsRound)
