@@ -1,11 +1,13 @@
 const express = require('express')
 const app = express()
+//app.use(express.static('public'))
 //const PORT = process.env.PORT || 3000
 const http = require('http')
 const Attraction =require('./src/models/attraction');
 const Individual =require('./src/controllers/individualController');
 const PORT =  process.env.PORT || 3000
-
+const path = require ('path');
+app.use(express.static(path.join('view')));
 //env
 const dotenv = require('dotenv')
 dotenv.config()
@@ -44,6 +46,8 @@ app.use(bodyParser.json())
 app.use(express.static("src/view/"));
 app.set('view engine', 'ejs')
 
+//app.use('views',require('/views/homePage.ejs'));
+
 // http status codes
 const statusOK = 200;
 const statusNotFound = 404;
@@ -69,10 +73,13 @@ app.use('/individual',require('./src/routes/individualAPI'))
 
 app.get('/', (req,res) => {
     res.send('ovedddd');
+    //res.render('homePage');
 });
 
 
-
+app.get('/homePage',((req, res) => {
+    res.render('homePage')
+}))
 
 
 
