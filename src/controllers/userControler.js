@@ -178,7 +178,7 @@ const getRoute=async (req, res) => {
                     for (let i = 0; i < schedule[1].length; i++) {
                         console.log(schedule[1][i])
                         let d = remove_minutes(schedule[1][i], attractionsRound[parseInt(schedule[0][i]) - 1])
-                        schedule[1][i] = d.toLocaleTimeString().replace(/(.*)\D\d+/, '$1');
+                        schedule[1][i] = d.toLocaleTimeString().replace(/(.*)\D\d+/, '$1').toString();
 
                         console.log(schedule[1][i])
                     }
@@ -202,7 +202,10 @@ const getRoute=async (req, res) => {
 // console.log(new Date(d.getFullYear(),d.getMonth(),d.getDate()))
 // console.log(remove_minutes(new Date(d.getFullYear(),d.getMonth(),d.getDate()), 5))
 
-
+d = new Date()
+d = remove_minutes(new Date(), 5)
+c = d.toLocaleTimeString().replace(/(.*)\D\d+/, '$1');
+console.log(c.toString())
 
 module.exports={
     getUsers,
