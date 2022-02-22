@@ -51,6 +51,7 @@ const getUserByID= (req,res,next)=>{
     User.findOne({userID:userID})
         .then(response=>{
             res.send(response)
+
         })
         .catch(error => {
             res.send('user not found')
