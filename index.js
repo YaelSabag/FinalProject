@@ -70,6 +70,7 @@ app.listen(PORT, () => {
 app.use('/users', require('./src/routes/usersAPI'))
 app.use('/attraction', require('./src/routes/attractionAPI'))
 app.use('/individual',require('./src/routes/individualAPI'))
+app.use('/algorithmController', require('./src/routes/algorithmAPI'))
 
 app.get('/', (req,res) => {
     res.send('ovedddd');

@@ -51,7 +51,8 @@ const creatInitialIndividual= (req,res)=> {
         //.select('selected_attractions')
         .then(response => {
             response.forEach(function(u) {
-                mainArrayGV.MainArray.push([u.selected_attractions,u.userID,schedule])
+                if(u.selected_attractions.length>=1)
+                    mainArrayGV.MainArray.push([u.selected_attractions,u.userID,schedule])
             });
             mainArrayGV.name = "population"
             mainArrayGV.save().then(response=>{

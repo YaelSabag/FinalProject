@@ -1,8 +1,8 @@
 // connection to db
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb+srv://margalit:cy426316@teampark.lohoh.mongodb.net/TeamPark?retryWrites=true&w=majority')
-    .then(response=>{console.log('connected')})
+// mongoose.connect('mongodb+srv://margalit:cy426316@teampark.lohoh.mongodb.net/TeamPark?retryWrites=true&w=majority')
+//     .then(response=>{console.log('connected')})
 
 
 
@@ -472,9 +472,16 @@ const add_hours =  function (dt, hours) {
 
 
 //
-setTimeout(Evolution,3000)
+//setTimeout(Evolution,3000)
 
 // fitness(1).then(response=>{console.log('fitness')})
 
 
 //console.log(b.push...(a))
+
+module.exports = {
+    Evolution,
+    fitness,
+    reset_UserTime,
+    Enter_To_Attraction1
+}

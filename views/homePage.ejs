@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Home Page</title>
+    <h1>Home Page</h1>
 </head>
+
 <body>
-<h1>Home Page</h1>
+<form class="form-horizontal" action='/algorithmController/Evolution' method="post">
+    <button type="submit">algorithm</button>
+</form>
+<form class="form-horizontal" action='/individual/creatInitialIndividual' method="post">
+    <button type="submit">create init individual</button>
+</form>
+<form class="form-horizontal" action='/individual/makePopulation' method="post">
+    <button type="submit">make populations</button>
+</form>
 
 </body>
 </html>
