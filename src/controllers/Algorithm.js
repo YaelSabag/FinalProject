@@ -18,9 +18,9 @@ const {render} = require("ejs");
 const {shuffle} = require("./individualController");
 
 // const variable
-const NUM_POP=20
-const NUM_PARENTS=6
-const NUM_DELETE=6
+const NUM_POP=10
+const NUM_PARENTS=4
+const NUM_DELETE=4
 
 
 
@@ -52,7 +52,7 @@ async function Evolution() {
     BestResult = sortedFitness_arr[0]
 
     // רצים בלולאת פור למספר קבוע של איטרציות או שערך הפיטנס הקטן ביותר שמוזחר מתכנס ועוצרים
-    for(iteration=0 ; iteration< 20 ;iteration++)
+    for(iteration=0 ; iteration< 15 ;iteration++)
     {
         console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ iteration :',iteration)
 
@@ -279,7 +279,7 @@ async function crossover(parents_arr,newID) {
 
 // אם מוחקים יותר מ4 לשנות את האפדט ID
 async function updatePopID(delete_arr) {
-    let childrenID_arr = [NUM_POP + 1, NUM_POP + 2, NUM_POP + 3, NUM_POP + 4, NUM_POP + 5, NUM_POP + 6]
+    let childrenID_arr = [NUM_POP + 1, NUM_POP + 2, NUM_POP + 3, NUM_POP + 4]
     let sizeDelete = delete_arr.length
     delete_arr.sort((a, b) => a - b).reverse()
     for (let i = 0; i < sizeDelete; ++i) {
