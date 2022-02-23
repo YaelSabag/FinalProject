@@ -116,6 +116,10 @@ const selected_attraction_update = (req,res,next)=>{
     console.log("selected_attraction_update")
     const userID=req.query.userID
     const selected_attractions_update = req.query.selected_attractions
+    for(let i = 0; i<selected_attractions_update.length; i++)
+    {
+        selected_attractions_update[i] = parseInt(selected_attractions_update[i]);
+    }
     console.log(req.query)
     User.findOneAndUpdate({userID},{$set:{selected_attractions:selected_attractions_update}})
         .then(response=>{
@@ -224,3 +228,4 @@ module.exports={
     selected_attraction_update,
     getRoute
 }
+

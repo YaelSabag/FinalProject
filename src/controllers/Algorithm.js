@@ -279,7 +279,7 @@ async function crossover(parents_arr,newID) {
 
 // אם מוחקים יותר מ4 לשנות את האפדט ID
 async function updatePopID(delete_arr) {
-    let childrenID_arr = [NUM_POP + 1, NUM_POP + 2, NUM_POP + 3, NUM_POP + 4, NUM_POP + 5, NUM_POP + 5]
+    let childrenID_arr = [NUM_POP + 1, NUM_POP + 2, NUM_POP + 3, NUM_POP + 4, NUM_POP + 5, NUM_POP + 6]
     let sizeDelete = delete_arr.length
     delete_arr.sort((a, b) => a - b).reverse()
     for (let i = 0; i < sizeDelete; ++i) {
